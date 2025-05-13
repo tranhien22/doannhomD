@@ -45,29 +45,27 @@ class CustomerController extends Controller
     {
         return view('cus_login');
     }
-    public function authLogin(Request $request): \Illuminate\Http\RedirectResponse
+    public function authLogin(Request $request)
     {
         $request->validate([
             'email' => 'required',
             'password' => 'required',
         ]);
         $user = User::where('email', $request->email)->first();
-          
+
         if ($user && Hash::check($request->password, $user->password)) {
-            if ($user ->role == 0) {
-				session::put('id_user',$user->id_user);
-                session('cart');
-                $request->session()->put('cart.user_id', $user->id_user);    
-                return redirect()->intended('Home')->withSuccess('Signed in');
+            if ($user->role == 1) {
+                // Nếu là admin
+                session(['id_user' => $user->id_user]);
+                return redirect()->route('admin.dashboard');
+            } else {
+                // Nếu là user thường
+                session(['id_user' => $user->id_user]);
+                return redirect()->route('home.index');
             }
-            else{
-                return redirect()->route('category.index');
-            }
-        }
-        else{
+        } else {
             return back()->withErrors(['email' => 'Invalid credentials']);
         }
-       
     }
 
     public function signOut(Request $request)

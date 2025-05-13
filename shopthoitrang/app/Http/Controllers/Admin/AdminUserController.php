@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Hash;
 
 class AdminUserController extends Controller
 {
@@ -60,5 +59,10 @@ class AdminUserController extends Controller
      $users = User::where('name','like','%'.$search.'%')
      ->orWhere('email','like','%'.$search.'%')->get();
      return view('admin.list.list_user',['users'=>$users, 'search'=>$search]);
+    }
+
+    public function dashboard()
+    {
+        return view('admin.dashboard');
     }
 }

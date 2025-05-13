@@ -20,29 +20,30 @@
                 <ul class="navbar-nav">
                     @guest
                     <li class="nav-item">
-                        <a class="nav-link" href="">Home</a>
+                        <a class="nav-link" href="{{ route('home.index') }}">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('category.index') }}">Danh mục</a>
                     </li>
-                  
                     <li class="nav-item">
-                        <a class="nav-link" href="">Hãng Sản Xuất</a>
+                        <a class="nav-link" href="{{ route('product.listproduct') }}">Sản Phẩm</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="">Người dùng</a>
+                        <a class="nav-link" href="{{ route('admin.orderindexAdmin') }}">Đơn Hàng</a>
                     </li>
-                    
                     <li class="nav-item">
-                        <a class="nav-link" href="">Bài viết</a>
+                        <a class="nav-link" href="{{ route('manufacturer.listmanufacturer') }}">Hãng Sản Xuất</a>
                     </li>
-
                     <li class="nav-item">
-                        <a class="nav-link" href="">Đăng Xuất</a>
+                        <a class="nav-link" href="{{ route('user.listuser') }}">Người dùng</a>
+                    </li>
+                 
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('signout') }}">Đăng Xuất</a>
                     </li>
                     @else
                     <li class="nav-item">
-                        <a class="nav-link" href="">Đăng Nhập</a>
+                        <a class="nav-link" href="{{ route('login') }}">Đăng Nhập</a>
                     </li>
                     @endguest
                 </ul>
