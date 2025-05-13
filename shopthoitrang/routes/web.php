@@ -22,3 +22,14 @@ Route::get('categoryupdate', [CategoryController::class, 'indexupdateCategory'])
 Route::post('categoryupdate', [CategoryController::class, 'updateCategory'])->name('category.updateCategory');
 Route::get('categorydelete', [CategoryController::class, 'deleteCategory'])->name('category.deleteCategory');
 
+// Register Client
+Route::get('/register',[CustomerController::class,'indexRegister']);
+Route::post('/register',[CustomerController::class,'authRegister'])->name('user.cus_register');
+
+// Login client
+Route::get('/login',[CustomerController::class,'indexLogin'])->name('user.indexlogin');
+Route::post('/login',[CustomerController::class,'authLogin'])->name('user.cus_login');
+
+// Logout
+Route::get('/signout', [CustomerController::class, 'signOut'])->name('signout');
+
