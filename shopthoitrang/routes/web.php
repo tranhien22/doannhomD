@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CategoryController;
-
+use App\Http\Controllers\User\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +22,4 @@ Route::get('categoryupdate', [CategoryController::class, 'indexupdateCategory'])
 Route::post('categoryupdate', [CategoryController::class, 'updateCategory'])->name('category.updateCategory');
 Route::get('categorydelete', [CategoryController::class, 'deleteCategory'])->name('category.deleteCategory');
 
+Route::get('detailproduct', [HomeController::class, 'indexDetailProduct'])->name('product.indexDetailproduct');
