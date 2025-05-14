@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\User\ProductControllerUser;
 
 
 /*
@@ -15,6 +16,8 @@ use App\Http\Controllers\Admin\CategoryController;
 |
 */
 
+Route::get('dashboard', [CategoryController::class, 'dashboard']);
+
 Route::get('category', [CategoryController::class, 'indexCategory'])->name('category.index');
 Route::get('categorycreate', [CategoryController::class, 'indexcreateCategory'])->name('category.createindex');
 Route::post('categorycreate', [CategoryController::class, 'createCategory'])->name('category.createCategory');
@@ -22,3 +25,7 @@ Route::get('categoryupdate', [CategoryController::class, 'indexupdateCategory'])
 Route::post('categoryupdate', [CategoryController::class, 'updateCategory'])->name('category.updateCategory');
 Route::get('categorydelete', [CategoryController::class, 'deleteCategory'])->name('category.deleteCategory');
 
+
+//search and filter
+Route::get('/filterProduct', [ProductControllerUser::class, 'filterProduct'])->name('user.filterProduct');
+Route::get('/searchProduct', [ProductControllerUser::class, 'searchProduct'])->name('user.searchProduct');
