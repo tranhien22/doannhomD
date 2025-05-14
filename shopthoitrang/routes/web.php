@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\User\ManufacturerControllerUser;
 use App\Http\Controllers\Admin\ManufacturerController;
+use App\Http\Controllers\User\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -86,3 +87,6 @@ Route::get('listmanufacturer', [ManufacturerController::class, 'indexManufacture
 Route::get('addmanufacturer', [ManufacturerController::class, 'indexAddManufacturer'])->name('manufacturer.addmanufacturer');
 Route::post('addmanufacturer', [ManufacturerController::class, 'addManufacturer']);
 Route::get('deletemanufacturer', [ManufacturerController::class, 'deleteManufacturer'])->name('manufacturer.deletemanufacturer');
+
+Route::get('detailproduct', [HomeController::class, 'indexDetailProduct'])->name('product.indexDetailproduct');
+
