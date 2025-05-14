@@ -10,6 +10,8 @@ use App\Http\Controllers\User\ManufacturerControllerUser;
 use App\Http\Controllers\Admin\ManufacturerController;
 use App\Http\Controllers\User\HomeController;
 use App\Http\Controllers\User\ProductControllerUser;
+use App\Http\Controllers\User\HomeController;
+
 
 
 /*
@@ -84,3 +86,6 @@ Route::get('detailproduct', [HomeController::class, 'indexDetailProduct'])->name
 //search and filter
 Route::get('/filterProduct', [ProductControllerUser::class, 'filterProduct'])->name('user.filterProduct');
 Route::get('/searchProduct', [ProductControllerUser::class, 'searchProduct'])->name('user.searchProduct');
+
+//home
+Route::get('/Home', [HomeController::class, 'indexHome'])->name('home.index');
