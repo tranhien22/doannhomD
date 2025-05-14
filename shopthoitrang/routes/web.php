@@ -8,7 +8,6 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\User\ManufacturerControllerUser;
 use App\Http\Controllers\Admin\ManufacturerController;
-use App\Http\Controllers\User\HomeController;
 use App\Http\Controllers\User\ProductControllerUser;
 use App\Http\Controllers\User\HomeController;
 
@@ -25,10 +24,6 @@ use App\Http\Controllers\User\HomeController;
 |
 */
 Route::get('dashboard', [CategoryController::class, 'dashboard']);
-
-// Home route
-Route::get('/', [HomeController::class, 'index'])->name('home.index');
-
 
 Route::get('dashboard', [CategoryController::class, 'dashboard']);
 

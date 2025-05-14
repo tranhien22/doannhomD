@@ -133,14 +133,14 @@
                                 </div>
                                 <!-- Cart -->
                                 <div>
-                                    <a class href="{{ route('cart.indexCart') }}">
+                                    <a class href="">
                                         <i class="fa fa-shopping-cart"></i>
                                         <span>Giỏ hàng</span>
                                     </a>
                                 </div>
                                 <!-- /Cart -->
                                 <div>
-                                    <a class href="{{ route('order.orderIndex') }}">
+                                    <a class href="">
                                         <i class="fa-solid fa-file-invoice"></i>
                                         <span>Đơn hàng</span>
                                     </a>
