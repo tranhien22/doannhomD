@@ -1621,17 +1621,17 @@
         },
         {
             "name": "laravel/sail",
-            "version": "v1.42.0",
-            "version_normalized": "1.42.0.0",
+            "version": "v1.43.0",
+            "version_normalized": "1.43.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/sail.git",
-                "reference": "2edaaf77f3c07a4099965bb3d7dfee16e801c0f6"
+                "reference": "71a509b14b2621ce58574274a74290f933c687f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/sail/zipball/2edaaf77f3c07a4099965bb3d7dfee16e801c0f6",
-                "reference": "2edaaf77f3c07a4099965bb3d7dfee16e801c0f6",
+                "url": "https://api.github.com/repos/laravel/sail/zipball/71a509b14b2621ce58574274a74290f933c687f7",
+                "reference": "71a509b14b2621ce58574274a74290f933c687f7",
                 "shasum": ""
             },
             "require": {
@@ -1646,7 +1646,7 @@
                 "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0",
                 "phpstan/phpstan": "^1.10"
             },
-            "time": "2025-04-29T14:26:46+00:00",
+            "time": "2025-05-13T13:34:34+00:00",
             "bin": [
                 "bin/sail"
             ],
@@ -5439,17 +5439,17 @@
         },
         {
             "name": "spatie/backtrace",
-            "version": "1.7.3",
-            "version_normalized": "1.7.3.0",
+            "version": "1.7.4",
+            "version_normalized": "1.7.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/backtrace.git",
-                "reference": "80ae5fabe2a1e3bc7df5c7ca5d91b094dc314b20"
+                "reference": "cd37a49fce7137359ac30ecc44ef3e16404cccbe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/backtrace/zipball/80ae5fabe2a1e3bc7df5c7ca5d91b094dc314b20",
-                "reference": "80ae5fabe2a1e3bc7df5c7ca5d91b094dc314b20",
+                "url": "https://api.github.com/repos/spatie/backtrace/zipball/cd37a49fce7137359ac30ecc44ef3e16404cccbe",
+                "reference": "cd37a49fce7137359ac30ecc44ef3e16404cccbe",
                 "shasum": ""
             },
             "require": {
@@ -5462,7 +5462,7 @@
                 "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.1.6",
                 "symfony/var-dumper": "^5.1 || ^6.0 || ^7.0"
             },
-            "time": "2025-05-07T07:20:00+00:00",
+            "time": "2025-05-08T15:41:09+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -5489,7 +5489,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/backtrace/tree/1.7.3"
+                "source": "https://github.com/spatie/backtrace/tree/1.7.4"
             },
             "funding": [
                 {

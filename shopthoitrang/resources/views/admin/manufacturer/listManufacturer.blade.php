@@ -42,7 +42,7 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="btn-group btn-group-sm">
-                                        <a href="{{ route('manufacturer.updateindex', ['id' => $manufacturer->id_manufacturer]) }}" class="btn btn-primary">
+                                        <a href="" class="btn btn-primary">
                                             <i class="bi bi-pencil-square"></i> Sửa
                                         </a>
                                         <a href="{{ route('manufacturer.deletemanufacturer', ['id' => $manufacturer->id_manufacturer]) }}" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn xóa hãng sản xuất này?')">
