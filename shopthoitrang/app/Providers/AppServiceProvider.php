@@ -1,28 +1,31 @@
 <?php
 
 namespace App\Providers;
+use Illuminate\Support\Facades\View;
+use App\Models\Manufacturer;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        //
+        Paginator::useBootstrap();
+        View::composer('user.dashboard_user', function ($view) {
+            $manufacturers = Manufacturer::all();
+            $view->with('manufacturers', $manufacturers);
+        });
     }
 }

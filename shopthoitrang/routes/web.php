@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\User\HomeController;
 
 
 /*
@@ -21,4 +22,8 @@ Route::post('categorycreate', [CategoryController::class, 'createCategory'])->na
 Route::get('categoryupdate', [CategoryController::class, 'indexupdateCategory'])->name('category.updateindex');
 Route::post('categoryupdate', [CategoryController::class, 'updateCategory'])->name('category.updateCategory');
 Route::get('categorydelete', [CategoryController::class, 'deleteCategory'])->name('category.deleteCategory');
+
+
+//home 
+Route::get('/Home', [HomeController::class, 'indexHome'])->name('home.index');
 
