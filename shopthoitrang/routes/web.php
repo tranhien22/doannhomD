@@ -2,12 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CategoryController;
-<<<<<<< HEAD
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\User\ManufacturerControllerUser;
 
 
 /*
@@ -24,6 +24,7 @@ Route::get('dashboard', [CategoryController::class, 'dashboard']);
 
 // Home route
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
+
 
 Route::get('category', [CategoryController::class, 'indexCategory'])->name('category.index');
 Route::get('categorycreate', [CategoryController::class, 'indexcreateCategory'])->name('category.createindex');
@@ -77,4 +78,6 @@ Route::get('/admin/manufacturer', function() {
     return 'Chức năng Hãng Sản Xuất đang phát triển';
 })->name('manufacturer.listmanufacturer');
 
+Route::get('/manufacture', [ManufacturerControllerUser::class, 'indexmanufacture'])->name('manufacture.indexmanufacture');
+Route::get('/manufacturer/{id}', [ManufacturerControllerUser::class, 'showProductsByManufacturer'])->name('manufacturer.products');
 
