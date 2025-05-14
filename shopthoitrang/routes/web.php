@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CategoryController;
-
+use App\Http\Controllers\Admin\ManufacturerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\CategoryController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('dashboard', [CategoryController::class, 'dashboard']);
 
 Route::get('category', [CategoryController::class, 'indexCategory'])->name('category.index');
 Route::get('categorycreate', [CategoryController::class, 'indexcreateCategory'])->name('category.createindex');
@@ -22,3 +23,8 @@ Route::get('categoryupdate', [CategoryController::class, 'indexupdateCategory'])
 Route::post('categoryupdate', [CategoryController::class, 'updateCategory'])->name('category.updateCategory');
 Route::get('categorydelete', [CategoryController::class, 'deleteCategory'])->name('category.deleteCategory');
 
+//manufacturer
+Route::get('listmanufacturer', [ManufacturerController::class, 'indexManufacturer'])->name('manufacturer.listmanufacturer');
+Route::get('addmanufacturer', [ManufacturerController::class, 'indexAddManufacturer'])->name('manufacturer.addmanufacturer');
+Route::post('addmanufacturer', [ManufacturerController::class, 'addManufacturer']);
+Route::get('deletemanufacturer', [ManufacturerController::class, 'deleteManufacturer'])->name('manufacturer.deletemanufacturer');
