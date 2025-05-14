@@ -10,6 +10,7 @@ use App\Http\Controllers\User\ManufacturerControllerUser;
 use App\Http\Controllers\Admin\ManufacturerController;
 use App\Http\Controllers\User\ProductControllerUser;
 use App\Http\Controllers\User\HomeController;
+use App\Http\Controllers\User\CartController;
 
 
 
@@ -25,7 +26,6 @@ use App\Http\Controllers\User\HomeController;
 */
 Route::get('dashboard', [CategoryController::class, 'dashboard']);
 
-Route::get('dashboard', [CategoryController::class, 'dashboard']);
 
 Route::get('category', [CategoryController::class, 'indexCategory'])->name('category.index');
 Route::get('categorycreate', [CategoryController::class, 'indexcreateCategory'])->name('category.createindex');
@@ -84,3 +84,11 @@ Route::get('/searchProduct', [ProductControllerUser::class, 'searchProduct'])->n
 
 //home
 Route::get('/Home', [HomeController::class, 'indexHome'])->name('home.index');
+
+//add to cart
+Route::post('addcard', [CartController::class, 'addCart'])->name('cart.addCard');
+Route::get('mycard', [CartController::class, 'indexCard'])->name('cart.indexCart');
+Route::post('mycard', [CartController::class, 'updateCart'])->name('cart.updateCart');
+Route::get('deleteproductcard', [CartController::class, 'deleteProductCart'])->name('cart.deleteproductcart');
+Route::get('cart/count', [CartController::class, 'getCount'])->name('cart.getCount');
+
