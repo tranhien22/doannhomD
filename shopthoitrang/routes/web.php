@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\User\ManufacturerControllerUser;
 use App\Http\Controllers\Admin\ManufacturerController;
 use App\Http\Controllers\User\HomeController;
+use App\Http\Controllers\User\ProductControllerUser;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +28,8 @@ Route::get('dashboard', [CategoryController::class, 'dashboard']);
 // Home route
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
+
+Route::get('dashboard', [CategoryController::class, 'dashboard']);
 
 Route::get('category', [CategoryController::class, 'indexCategory'])->name('category.index');
 Route::get('categorycreate', [CategoryController::class, 'indexcreateCategory'])->name('category.createindex');
@@ -90,3 +94,6 @@ Route::get('deletemanufacturer', [ManufacturerController::class, 'deleteManufact
 
 Route::get('detailproduct', [HomeController::class, 'indexDetailProduct'])->name('product.indexDetailproduct');
 
+//search and filter
+Route::get('/filterProduct', [ProductControllerUser::class, 'filterProduct'])->name('user.filterProduct');
+Route::get('/searchProduct', [ProductControllerUser::class, 'searchProduct'])->name('user.searchProduct');
