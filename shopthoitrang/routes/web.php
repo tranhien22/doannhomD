@@ -10,6 +10,9 @@ use App\Http\Controllers\User\ManufacturerControllerUser;
 use App\Http\Controllers\Admin\ManufacturerController;
 use App\Http\Controllers\User\ProductControllerUser;
 use App\Http\Controllers\User\HomeController;
+use App\Http\Controllers\Admin\AdminOrderController;
+
+
 
 
 
@@ -84,3 +87,10 @@ Route::get('/searchProduct', [ProductControllerUser::class, 'searchProduct'])->n
 
 //home
 Route::get('/Home', [HomeController::class, 'indexHome'])->name('home.index');
+
+
+//Bill Management
+Route::get('orderindexAdmin',[AdminOrderController::class, 'orderindexAdmin'])->name('admin.orderindexAdmin');
+Route::get('adminsearchorder',[AdminOrderController::class, 'adminSearchOrder'])->name('admin.adminSearchOrder');
+Route::get('admindetailsorderindex',[AdminOrderController::class, 'adminDetailsOrderIndex'])->name('admin.adminDetailsOrderIndex');
+Route::get('admindetailsorderdelete',[AdminOrderController::class, 'adminDetailsOrderDelete'])->name('admin.adminDetailsOrderDelete');
