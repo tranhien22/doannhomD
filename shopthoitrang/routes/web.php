@@ -10,10 +10,17 @@ use App\Http\Controllers\User\ManufacturerControllerUser;
 use App\Http\Controllers\Admin\ManufacturerController;
 use App\Http\Controllers\User\ProductControllerUser;
 use App\Http\Controllers\User\HomeController;
+
 use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\PaymentController;
 use App\Http\Controllers\User\DetailsOrderController;
+
+use App\Http\Controllers\Admin\AdminOrderController;
+
+
+
+
 
 
 /*
@@ -88,6 +95,7 @@ Route::get('/searchProduct', [ProductControllerUser::class, 'searchProduct'])->n
 //home
 Route::get('/Home', [HomeController::class, 'indexHome'])->name('home.index');
 
+
 //add to cart
 Route::post('addcard', [CartController::class, 'addCart'])->name('cart.addCard');
 Route::get('mycard', [CartController::class, 'indexCard'])->name('cart.indexCart');
@@ -102,4 +110,13 @@ Route::post('myorder', [OrderController::class, 'addOrder'])->name('order.addOrd
 Route::get('payment', [PaymentController::class, 'paymentIndex'])->name('payment.paymentindex');
 Route::get('detailsorder', [detailsOrderController::class, 'addDetailsOrder'])->name('detailsorder.addDetailsOrder');
 Route::get('orderindex',[OrderController::class, 'orderIndex'])->name('order.orderIndex');
+Route::get('detailsorderindex',[detailsOrderController::class, 'detailsOrderIndex'])->name('detailsorder.detailsOrderIndex');
+=======
+
+//Bill Management
+Route::get('orderindexAdmin',[AdminOrderController::class, 'orderindexAdmin'])->name('admin.orderindexAdmin');
+Route::get('adminsearchorder',[AdminOrderController::class, 'adminSearchOrder'])->name('admin.adminSearchOrder');
+Route::get('admindetailsorderindex',[AdminOrderController::class, 'adminDetailsOrderIndex'])->name('admin.adminDetailsOrderIndex');
+Route::get('admindetailsorderdelete',[AdminOrderController::class, 'adminDetailsOrderDelete'])->name('admin.adminDetailsOrderDelete');
+
 Route::get('detailsorderindex',[detailsOrderController::class, 'detailsOrderIndex'])->name('detailsorder.detailsOrderIndex');
