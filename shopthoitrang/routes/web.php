@@ -10,7 +10,10 @@ use App\Http\Controllers\User\ManufacturerControllerUser;
 use App\Http\Controllers\Admin\ManufacturerController;
 use App\Http\Controllers\User\ProductControllerUser;
 use App\Http\Controllers\User\HomeController;
-
+use App\Http\Controllers\User\CartController;
+use App\Http\Controllers\User\OrderController;
+use App\Http\Controllers\User\PaymentController;
+use App\Http\Controllers\User\DetailsOrderController;
 
 
 /*
@@ -84,3 +87,19 @@ Route::get('/searchProduct', [ProductControllerUser::class, 'searchProduct'])->n
 
 //home
 Route::get('/Home', [HomeController::class, 'indexHome'])->name('home.index');
+
+//add to cart
+Route::post('addcard', [CartController::class, 'addCart'])->name('cart.addCard');
+Route::get('mycard', [CartController::class, 'indexCard'])->name('cart.indexCart');
+Route::post('mycard', [CartController::class, 'updateCart'])->name('cart.updateCart');
+Route::get('deleteproductcard', [CartController::class, 'deleteProductCart'])->name('cart.deleteproductcart');
+Route::get('cart/count', [CartController::class, 'getCount'])->name('cart.getCount');
+Route::get('order/count', [OrderController::class, 'getCount'])->name('order.getCount');
+
+//payment
+Route::get('myorder', [OrderController::class, 'addOrder'])->name('order.addOrder');
+Route::post('myorder', [OrderController::class, 'addOrder'])->name('order.addOrder');
+Route::get('payment', [PaymentController::class, 'paymentIndex'])->name('payment.paymentindex');
+Route::get('detailsorder', [detailsOrderController::class, 'addDetailsOrder'])->name('detailsorder.addDetailsOrder');
+Route::get('orderindex',[OrderController::class, 'orderIndex'])->name('order.orderIndex');
+Route::get('detailsorderindex',[detailsOrderController::class, 'detailsOrderIndex'])->name('detailsorder.detailsOrderIndex');
