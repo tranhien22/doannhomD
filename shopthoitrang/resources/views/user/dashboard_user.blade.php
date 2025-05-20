@@ -110,7 +110,10 @@
                         <div class="header-ctn">
                             <!-- new -->
                             <div>
-
+                                <a href="{{ route('post.indexListPostUser') }}">
+                                    <i class="fa fa-newspaper-o"></i>
+                                    <span>Bài viết</span>
+                                </a>
                             </div>
                             <!-- /new -->
                             <?php

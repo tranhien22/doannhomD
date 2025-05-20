@@ -15,6 +15,7 @@ use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\PaymentController;
 use App\Http\Controllers\User\DetailsOrderController;
 use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\Admin\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -108,3 +109,14 @@ Route::get('payment', [PaymentController::class, 'paymentIndex'])->name('payment
 Route::get('detailsorder', [detailsOrderController::class, 'addDetailsOrder'])->name('detailsorder.addDetailsOrder');
 Route::get('orderindex',[OrderController::class, 'orderIndex'])->name('order.orderIndex');
 Route::get('detailsorderindex',[detailsOrderController::class, 'detailsOrderIndex'])->name('detailsorder.detailsOrderIndex');
+
+//Post
+Route::get('detailpost',[PostController::class, 'detailPost'])->name('post.detailpost');
+Route::get('addpost',[PostController::class, 'indexAddPost'])->name('post.indexaddpost');
+Route::post('addpost',[PostController::class, 'addPost'])->name('post.addpost');
+Route::get('listpost',[PostController::class, 'listPost'])->name('post.listpost');
+Route::get('listpostuser',[PostController::class, 'indexListPostUser'])->name('post.indexListPostUser');
+Route::get('deletepost',[PostController::class, 'deletePost'])->name('post.deletepost');
+Route::get('updatepost',[PostController::class, 'indexUpdatePost'])->name('post.indexupdatepost');
+Route::post('updatepost',[PostController::class, 'updatePost'])->name('post.updatepost');
+Route::post('searchpost',[PostController::class, 'searchPost'])->name('post.searchpost');
