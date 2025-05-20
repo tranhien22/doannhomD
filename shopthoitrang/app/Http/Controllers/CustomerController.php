@@ -61,6 +61,7 @@ class CustomerController extends Controller
             } else {
                 // Nếu là user thường
                 session(['id_user' => $user->id_user]);
+                session(['cart' => ['user_id' => $user->id_user]]);
                 return redirect()->route('home.index');
             }
         } else {
