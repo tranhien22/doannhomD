@@ -8,13 +8,14 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Manufacturer;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
     public function indexProduct() {
-        $products = Product::paginate(2);
+        $products = Product::getProductsWithPagination(2);
         $category = Category::all();
-        $manufacturer = Manufacturer::all();
+        $manufacturer = Manufacturer::getAllManufacturers();
         return view('admin.product.listproduct', [
             'products' => $products,
             'categorys' => $category,
@@ -24,7 +25,7 @@ class ProductController extends Controller
 
     public function indexAddProduct(){
         $category = Category::all();
-        $manufacturer = Manufacturer::all();
+        $manufacturer = Manufacturer::getAllManufacturers();
         return view('admin.product.addproduct', [
             'categorys' => $category,
             'manufacturers' => $manufacturer
@@ -32,57 +33,83 @@ class ProductController extends Controller
     }
     
     public function addProduct(Request $request){
+        // Validate the request
+        $validator = Validator::make($request->all(), Product::$rules, Product::$messages);
 
-        $request->validate([
-            'selected_category' => 'required',
-            'selected_manufacturer' => 'required',
-            'name_product' => 'required',
-            'quantity_product' => 'required',
-            'price_product' => 'required',
-            'image_address_product' => 'required',
-            'describe_product' => 'required',
-            'specifications' => 'required',
-            // Sizes and colors are optional, so no validation rules here
-        ]);
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
         $data = $request->all();
 
-        if($request->hasFile('image_address_product'))
-        {
+        // Handle image upload
+        if($request->hasFile('image_address_product')) {
             $file = $request->file('image_address_product');
-            $ex = $file->getClientOriginalExtension(); // Lay phan mo rong .jpg,...
+            $ex = $file->getClientOriginalExtension();
             $filename = time().'.'.$ex;
             $file->move('uploads/productimage/',$filename);
             $data['image_address_product'] = $filename;
         }
 
-        Product::create([
-            'id_category' => $data['selected_category'],
-            'id_manufacturer' => $data['selected_manufacturer'], 
-            'name_product' => $data['name_product'],
-            'quantity_product' => $data['quantity_product'], 
-            'price_product' => $data['price_product'],
-            'image_address_product' => $data['image_address_product'], 
-            'describe_product' => $data['describe_product'],
-            'specifications' => $data['specifications'],
-            'sizes' => $data['sizes'] ?? null, // Add the sizes field
-            'colors' => $data['colors'] ?? null, // Add the colors field
-        ]);
-        
-        return redirect()->route('product.listproduct');
+        try {
+            // Create new product
+            Product::createProduct([
+                'selected_category' => $data['id_category'],
+                'selected_manufacturer' => $data['id_manufacturer'],
+                'name_product' => $data['name_product'],
+                'quantity_product' => $data['quantity_product'],
+                'price_product' => $data['price_product'],
+                'image_address_product' => $data['image_address_product'],
+                'describe_product' => $data['describe_product'],
+                'specifications' => $data['specifications'] ?? null,
+                'sizes' => $data['sizes'] ?? null,
+                'colors' => $data['colors'] ?? null,
+            ]);
+
+            return redirect()->route('product.listproduct')
+                ->with('success', 'Thêm sản phẩm thành công');
+        } catch (\Exception $e) {
+            // If image was uploaded but product creation failed, delete the image
+            if (isset($data['image_address_product'])) {
+                $image_path = 'uploads/productimage/' . $data['image_address_product'];
+                if (File::exists($image_path)) {
+                    File::delete($image_path);
+                }
+            }
+
+            return redirect()->back()
+                ->with('error', 'Có lỗi xảy ra khi thêm sản phẩm: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     public function deleteProduct(Request $request){
-        $product_id = $request->get('id');
-        $product = Product::destroy($product_id);
-        return redirect()->route('product.listproduct');
+        try {
+            $product = Product::findProductById($request->get('id'));
+            
+            // Delete the product image if it exists
+            if ($product && $product->image_address_product) {
+                $image_path = 'uploads/productimage/' . $product->image_address_product;
+                if (File::exists($image_path)) {
+                    File::delete($image_path);
+                }
+            }
+
+            Product::destroy($request->get('id'));
+            return redirect()->route('product.listproduct')
+                ->with('success', 'Xóa sản phẩm thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Có lỗi xảy ra khi xóa sản phẩm: ' . $e->getMessage());
+        }
     }
 
     public function indexUpdateProduct(Request $request){
-        $product_id = $request->get('id');
-        $product = Product::where('id_product',$product_id)->first();
+        $product = Product::findProductById($request->get('id'));
         $category = Category::all();
-        $manufacturer = Manufacturer::all();
+        $manufacturer = Manufacturer::getAllManufacturers();
         return view('admin.product.updateproduct', [
             'products' => $product,
             'categorys' => $category,
@@ -91,38 +118,63 @@ class ProductController extends Controller
     }
     
     public function updateProduct(Request $request){
-        $input = $request->all();
-        $id_product = $input['id'];
-        $product = Product::where('id_product', $id_product)->first();
-        $id_category = $request->input('selected_category');
-        $id_manufacturer = $request->input('selected_manufacturer');
-        $product->id_category = $id_category;
-        $product->id_manufacturer = $id_manufacturer;
-        $product->name_product = $input['name_product'];
-        $product->quantity_product = $input['quantity_product'];
-        $product->price_product = $input['price_product'];
-        $product->describe_product = $input['describe_product'];
-        $product->specifications = $input['specifications'];
-        $product->sizes = $input['sizes'] ?? $product->sizes; // Update sizes if provided
-        $product->colors = $input['colors'] ?? $product->colors; // Update colors if provided
+        // Sử dụng rules giống như khi thêm mới
+        $validator = Validator::make($request->all(), Product::$rules, Product::$messages);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $data = $request->all();
         
-        if($request->hasFile('image_address_product'))
-        {
-            //Xoa ảnh cũ
-            $image_cu = 'uploads/productimage/' . $product->image_address_product;
-            if(File::exists($image_cu))
-            {
-                File::delete($image_cu);
+        try {
+            $product = Product::findProductById($data['id']);
+
+            if($request->hasFile('image_address_product')) {
+                // Xóa ảnh cũ
+                $image_cu = 'uploads/productimage/' . $product->image_address_product;
+                if(File::exists($image_cu)) {
+                    File::delete($image_cu);
+                }
+                
+                // Upload ảnh mới
+                $file = $request->file('image_address_product');
+                $ex = $file->getClientOriginalExtension();
+                $filename = time().'.'.$ex;
+                $file->move('uploads/productimage/',$filename);
+                $data['image_address_product'] = $filename;
             }
-            //xử lý ảnh mới
-            $file = $request->file('image_address_product');
-            $ex = $file->getClientOriginalExtension(); //Lay phan mo rong .jpg,...
-            $filename = time().'.'.$ex;
-            $file->move('uploads/productimage/',$filename);
-            $input['image_address_product'] = $filename;
-            $product->image_address_product = $input['image_address_product'];     
-        }   
-        $product->save();
-        return redirect()->route('product.listproduct');
+
+            // Update product
+            Product::updateProductById($data['id'], [
+                'selected_category' => $data['id_category'],
+                'selected_manufacturer' => $data['id_manufacturer'],
+                'name_product' => $data['name_product'],
+                'quantity_product' => $data['quantity_product'],
+                'price_product' => $data['price_product'],
+                'describe_product' => $data['describe_product'],
+                'specifications' => $data['specifications'] ?? null,
+                'sizes' => $data['sizes'] ?? null,
+                'colors' => $data['colors'] ?? null,
+                'image_address_product' => $data['image_address_product'] ?? $product->image_address_product,
+            ]);
+
+            return redirect()->route('product.listproduct')
+                ->with('success', 'Cập nhật sản phẩm thành công');
+        } catch (\Exception $e) {
+            // Nếu upload ảnh mới mà lỗi thì xóa ảnh mới
+            if (isset($data['image_address_product']) && $request->hasFile('image_address_product')) {
+                $image_path = 'uploads/productimage/' . $data['image_address_product'];
+                if (File::exists($image_path)) {
+                    File::delete($image_path);
+                }
+            }
+
+            return redirect()->back()
+                ->with('error', 'Có lỗi xảy ra khi cập nhật sản phẩm: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 }
