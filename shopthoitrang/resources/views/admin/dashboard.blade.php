@@ -29,7 +29,7 @@
                         <a class="nav-link" href="{{ route('product.listproduct') }}">Sản Phẩm</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="">Đơn Hàng</a>
+                        <a class="nav-link" href="{{ route('admin.orderindexAdmin') }}">Đơn Hàng</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('manufacturer.listmanufacturer') }}">Hãng Sản Xuất</a>
