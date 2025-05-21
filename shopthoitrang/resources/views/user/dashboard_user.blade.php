@@ -107,17 +107,14 @@
 
                     <!-- ACCOUNT -->
                     <div class="col-md-5 clearfix">
-                        <div class="header-ctn">
-                            <!-- new -->
-                            <div>
-
-                            </div>
-                            <!-- /new -->
-                            <?php
-                            if (Session::get('id_user')) {
-                            ?>
+                        <div class="header-ctn d-flex align-items-center gap-3">
+                            <a href="{{ route('post.indexListPostUser') }}" class="header-link">
+                                <i class="fa fa-newspaper-o"></i>
+                                <span>Bài viết</span>
+                            </a>
+                            @if(Session::get('id_user'))
                                 <div class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a href="#" class="dropdown-toggle header-link" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fa-solid fa-industry"></i>
                                         <span>Nhà Sản Xuất</span>
                                     </a>
@@ -131,49 +128,30 @@
                                         @endforeach
                                     </ul>
                                 </div>
-                                <!-- Cart -->
-                                <div>
-                                    <a class href="{{ route('cart.indexCart') }}">
-                                        <i class="fa fa-shopping-cart"></i>
-                                        <span>Giỏ hàng</span>
-                                    </a>
-                                </div>
-                                <!-- /Cart -->
-                                <div>
-                                    <a class href="{{ route('order.orderIndex') }}">
-                                        <i class="fa-solid fa-file-invoice"></i>
-                                        <span>Đơn hàng</span>
-                                    </a>
-                                </div>
-                                <!-- Cart -->
-                                <div>
-                                    <a class href="{{ route('signout')}} ">
-                                        <i class="fa-solid fa-right-from-bracket"></i>
-                                        <span>Đăng xuất</span>
-                                    </a>
-                                </div>
-
-                            <?php
-                            } else {
-                            ?>
-                                <div>
-                                    <a class href="{{ route('user.indexlogin') }}">
-                                        <i class="fa-solid fa-right-to-bracket"></i>
-                                        <span>Đăng nhập</span>
-                                    </a>
-                                </div>
-                            <?php
-                            }
-                            ?>
-                            <!-- /Cart -->
-                            <!-- Menu Toogle -->
-                            <div class="menu-toggle">
-                                <a href="#">
-                                    <i class="fa fa-bars"></i>
-                                    <span>Menu</span>
+                                <a href="{{ route('cart.indexCart') }}" class="header-link position-relative">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    <span>Giỏ hàng</span>
+                                    <span class="cart-badge" id="header-cart-count">{{ $cartCount }}</span>
                                 </a>
-                            </div>
-                            <!-- /Menu Toogle -->
+                                <a href="{{ route('order.orderIndex') }}" class="header-link position-relative">
+                                    <i class="fa-solid fa-file-invoice"></i>
+                                    <span>Đơn hàng</span>
+                                    <span class="order-badge" id="header-order-count">{{ $orderCount }}</span>
+                                </a>
+                                <a href="{{ route('signout') }}" class="header-link">
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                    <span>Đăng xuất</span>
+                                </a>
+                            @else
+                                <a href="{{ route('user.indexlogin') }}" class="header-link">
+                                    <i class="fa-solid fa-right-to-bracket"></i>
+                                    <span>Đăng nhập</span>
+                                </a>
+                            @endif
+                            <a href="#" class="header-link menu-toggle">
+                                <i class="fa fa-bars"></i>
+                                <span>Menu</span>
+                            </a>
                         </div>
                     </div>
                     <!-- /ACCOUNT -->
@@ -216,8 +194,77 @@
     }
 
     .header-ctn {
+        display: flex !important;
+        align-items: center;
+        gap: 20px;
         padding-right: 50px;
     }
+
+    .header-link {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #fff;
+        text-decoration: none;
+        position: relative;
+        padding: 0 8px;
+        font-size: 15px;
+        transition: color 0.2s;
+        font-weight: 500;
+    }
+
+    .header-link:hover {
+        color: #ff523b;
+    }
+
+    .cart-badge, .order-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: #ff523b;
+        color: white;
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-size: 12px;
+        min-width: 18px;
+        text-align: center;
+    }
 </style>
+
+<script>
+    // Cập nhật số lượng giỏ hàng và đơn hàng khi trang được tải
+    $(document).ready(function() {
+        updateCartCount();
+        updateOrderCount();
+    });
+
+    // Hàm cập nhật số lượng sản phẩm trong giỏ hàng
+    function updateCartCount() {
+        $.ajax({
+            url: "{{ route('cart.getCount') }}",
+            method: 'GET',
+            success: function(response) {
+                $('#header-cart-count').text(response.count);
+            }
+        });
+    }
+
+    // Hàm cập nhật số lượng đơn hàng
+    function updateOrderCount() {
+        $.ajax({
+            url: "{{ route('order.getCount') }}",
+            method: 'GET',
+            success: function(response) {
+                $('#header-order-count').text(response.count);
+            }
+        });
+    }
+
+    // Cập nhật số lượng sau mỗi 30 giây
+    setInterval(function() {
+        updateCartCount();
+        updateOrderCount();
+    }, 30000);
+</script>
 
 </html>
