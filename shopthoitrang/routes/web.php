@@ -85,6 +85,8 @@ Route::get('listmanufacturer', [ManufacturerController::class, 'indexManufacture
 Route::get('addmanufacturer', [ManufacturerController::class, 'indexAddManufacturer'])->name('manufacturer.addmanufacturer');
 Route::post('addmanufacturer', [ManufacturerController::class, 'addManufacturer']);
 Route::get('deletemanufacturer', [ManufacturerController::class, 'deleteManufacturer'])->name('manufacturer.deletemanufacturer');
+Route::get('updatemanufacturer', [ManufacturerController::class, 'indexUpdateManufacturer'])->name('manufacturer.indexupdatemanufacturer');
+Route::post('updatemanufacturer', [ManufacturerController::class, 'updateManufacturer'])->name('manufacturer.updatemanufacturer');
 
 Route::get('detailproduct', [HomeController::class, 'indexDetailProduct'])->name('product.indexDetailproduct');
 
@@ -111,7 +113,6 @@ Route::get('payment', [PaymentController::class, 'paymentIndex'])->name('payment
 Route::get('detailsorder', [detailsOrderController::class, 'addDetailsOrder'])->name('detailsorder.addDetailsOrder');
 Route::get('orderindex',[OrderController::class, 'orderIndex'])->name('order.orderIndex');
 Route::get('detailsorderindex',[detailsOrderController::class, 'detailsOrderIndex'])->name('detailsorder.detailsOrderIndex');
-=======
 
 //Bill Management
 Route::get('orderindexAdmin',[AdminOrderController::class, 'orderindexAdmin'])->name('admin.orderindexAdmin');
