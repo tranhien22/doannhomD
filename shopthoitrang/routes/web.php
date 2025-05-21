@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\PostController;
 */
 Route::get('dashboard', [CategoryController::class, 'dashboard']);
 
+Route::get('dashboard', [CategoryController::class, 'dashboard']);
 
 Route::get('category', [CategoryController::class, 'indexCategory'])->name('category.index');
 Route::get('categorycreate', [CategoryController::class, 'indexcreateCategory'])->name('category.createindex');
@@ -78,6 +79,8 @@ Route::get('listmanufacturer', [ManufacturerController::class, 'indexManufacture
 Route::get('addmanufacturer', [ManufacturerController::class, 'indexAddManufacturer'])->name('manufacturer.addmanufacturer');
 Route::post('addmanufacturer', [ManufacturerController::class, 'addManufacturer']);
 Route::get('deletemanufacturer', [ManufacturerController::class, 'deleteManufacturer'])->name('manufacturer.deletemanufacturer');
+Route::get('updatemanufacturer', [ManufacturerController::class, 'indexUpdateManufacturer'])->name('manufacturer.indexupdatemanufacturer');
+Route::post('updatemanufacturer', [ManufacturerController::class, 'updateManufacturer'])->name('manufacturer.updatemanufacturer');
 
 Route::get('detailproduct', [HomeController::class, 'indexDetailProduct'])->name('product.indexDetailproduct');
 
