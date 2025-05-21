@@ -10,7 +10,7 @@ use App\Models\Manufacturer;
 class ManufacturerController extends Controller
 {
     public function indexManufacturer(){
-        $manufacturers = Manufacturer::paginate(2);
+        $manufacturers = Manufacturer::getManufacturersWithPagination(2);
         return view('admin.manufacturer.listManufacturer', ['manufacturers' => $manufacturers]);
     }    
 
@@ -20,8 +20,21 @@ class ManufacturerController extends Controller
     
     public function addManufacturer(Request $request){
         $request->validate([
-            'name_manufacturer' => 'required',
-            'image_manufacturer' => 'required'
+            'name_manufacturer' => [
+                'required',
+                'string',
+                'max:100',
+                'regex:/^[a-zA-Z0-9À-ỹ\s\.,\-()]+$/u'
+            ],
+            'image_manufacturer' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ], [
+            'name_manufacturer.required' => 'Vui lòng nhập tên hãng sản xuất',
+            'name_manufacturer.max' => 'Tên hãng không quá 100 ký tự',
+            'name_manufacturer.regex' => 'Tên hãng chỉ được chứa chữ, số và một số ký tự hợp lệ',
+            'image_manufacturer.required' => 'Vui lòng chọn ảnh hãng sản xuất',
+            'image_manufacturer.image' => 'File phải là ảnh',
+            'image_manufacturer.mimes' => 'Chỉ chấp nhận ảnh jpeg, png, jpg, gif',
+            'image_manufacturer.max' => 'Ảnh không quá 2MB',
         ]);
 
         $data = $request->all();
@@ -29,33 +42,27 @@ class ManufacturerController extends Controller
         if($request->hasFile('image_manufacturer'))
         {
             $file = $request->file('image_manufacturer');
-            $ex = $file->getClientOriginalExtension(); //Lay phan mo rong .jpn,....
+            $ex = $file->getClientOriginalExtension();
             $filename = time().'.'.$ex;
             $file->move('uploads/manufacturerimage/',$filename);
             $data['image_manufacturer'] = $filename;
-
         }
 
-        Manufacturer::create([                              
-            'name_manufacturer' => $data['name_manufacturer'],
-            'image_manufacturer' => $data['image_manufacturer'], 
-        ]);
-        return redirect()->route('manufacturer.listmanufacturer');
+        Manufacturer::createManufacturer($data);
+        return redirect()->route('manufacturer.listmanufacturer')->with('success', 'Thêm hãng sản xuất thành công!');
     }
 
     public function deleteManufacturer(Request $request){
         $manufacturer_id = $request->get('id');
-        $manufacturer = Manufacturer::destroy($manufacturer_id);
-
+        Manufacturer::destroy($manufacturer_id);
         return redirect()->route('manufacturer.listmanufacturer');
     }
     
     public function indexUpdateManufacturer(Request $request){
         $manufacturer_id = $request->get('id');
-        $manufacturer = Manufacturer::where('id_manufacturer',$manufacturer_id)->first();
+        $manufacturer = Manufacturer::findManufacturerById($manufacturer_id);
         return view('admin.manufacturer.updatemanufacturer', ['manufacturer' => $manufacturer]);
     }
-
 
    
 }

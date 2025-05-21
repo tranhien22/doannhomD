@@ -1,8 +1,13 @@
-
 @extends('admin.dashboard')
 
 <!-- Manufacturer section -->
 @section('content')
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 <main class="listmanufacturer-form py-4">
     <div class="container-fluid px-4">
         <div class="card shadow-sm mb-4">
