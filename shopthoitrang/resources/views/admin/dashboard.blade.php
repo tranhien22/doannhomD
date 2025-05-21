@@ -20,7 +20,7 @@
                 <ul class="navbar-nav">
                     @guest
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('home.index') }}">Home</a>
+                        <a class="nav-link" href="{{ route('admin.dashboard') }}">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('category.index') }}">Danh mục</a>

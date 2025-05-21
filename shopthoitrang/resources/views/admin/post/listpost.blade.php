@@ -57,6 +57,29 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="col-12 pagination-container mt-4">
+                    <ul class="pagination justify-content-center m-0">
+                        @if ($posts->onFirstPage())
+                        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                        @else
+                        <li class="page-item"><a class="page-link" href="{{ $posts->previousPageUrl() }}">&laquo;</a></li>
+                        @endif
+
+                        @foreach ($posts->getUrlRange(1, $posts->lastPage()) as $page => $url)
+                        @if ($page == $posts->currentPage())
+                        <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
+                        @else
+                        <li class="page-item"><a class="page-link" href="{{ $url }}">{{ $page }}</a></li>
+                        @endif
+                        @endforeach
+
+                        @if ($posts->hasMorePages())
+                        <li class="page-item"><a class="page-link" href="{{ $posts->nextPageUrl() }}">&raquo;</a></li>
+                        @else
+                        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                        @endif
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

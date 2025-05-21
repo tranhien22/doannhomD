@@ -20,4 +20,10 @@ class Posts extends Model
     {
         return $this->belongsToMany(Image_Post::class, 'postimages', 'id_post', 'id_image_post');
     }
+
+    // Query Methods
+    public static function getPostWithPagination($perPage = 2)
+    {
+        return self::paginate($perPage);
+    }
 }

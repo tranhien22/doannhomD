@@ -34,6 +34,22 @@ class CategorySeeder extends Seeder
         DB::table('categories')->insert([
             'name_category' => 'Áo chống nắng',
         ]);
+        
+        DB::table('categories')->insert([
+            'name_category' => 'Áo dài tay',
+        ]);
+        
+        DB::table('categories')->insert([
+            'name_category' => 'Váy dài',
+        ]);
+        
+        DB::table('categories')->insert([
+            'name_category' => 'Quần đùiđùi',
+        ]);
+        
+        DB::table('categories')->insert([
+            'name_category' => 'Túi mù ',
+        ]);
 
     }
 }
