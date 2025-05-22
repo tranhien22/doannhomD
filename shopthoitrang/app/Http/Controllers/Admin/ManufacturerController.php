@@ -64,5 +64,25 @@ class ManufacturerController extends Controller
         return view('admin.manufacturer.updatemanufacturer', ['manufacturer' => $manufacturer]);
     }
 
-   
+    public function updateManufacturer(Request $request){
+        $data = $request->all();
+        $manufacturer_id = $request->input('id');
+        $manufacturer = Manufacturer::findManufacturerById($manufacturer_id);
+        if (!$manufacturer) {
+            return redirect()->route('manufacturer.listmanufacturer')->with('error', 'Không tìm thấy hãng sản xuất!');
+        }
+
+        if($request->hasFile('image_manufacturer')) {
+            $file = $request->file('image_manufacturer');
+            $ex = $file->getClientOriginalExtension();
+            $filename = time().'.'.$ex;
+            $file->move('uploads/manufacturerimage/', $filename);
+            $data['image_manufacturer'] = $filename;
+        } else {
+            $data['image_manufacturer'] = $manufacturer->image_manufacturer;
+        }
+
+        Manufacturer::updateManufacturerById($manufacturer_id, $data);
+        return redirect()->route('manufacturer.listmanufacturer')->with('success', 'Cập nhật hãng sản xuất thành công!');
+    }
 }
