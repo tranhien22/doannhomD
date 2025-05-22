@@ -184,5 +184,135 @@ class ProductSeeder extends Seeder
             'colors' => 'Xanh,Đen,Xám',
         ]);
 
+        // Sản phẩm mới 1 - Áo hoodie nam thời trang
+        DB::table('products')->insert([
+            'id_category' => '1',
+            'id_manufacturer' => '1',
+            'name_product' => 'Áo hoodie nam thời trang',
+            'quantity_product' => '900',
+            'price_product' => '329000',
+            'image_address_product' => 'product_new1.jpg',
+            'describe_product' => 'Áo hoodie nam chất nỉ bông, form rộng, phong cách trẻ trung, cá tính.',
+            'specifications' => 'Việt Nam.;Dài áo 72cm;Đen, Xám, Xanh navy;M-L-XL;Áo hoodie;Nỉ bông;',
+            'sizes' => 'M,L,XL',
+            'colors' => 'Đen,Xám,Xanh navy',
+        ]);
+        // Sản phẩm mới 2 - Váy dạ hội nữ sang trọng
+        DB::table('products')->insert([
+            'id_category' => '2',
+            'id_manufacturer' => '2',
+            'name_product' => 'Váy dạ hội nữ sang trọng',
+            'quantity_product' => '300',
+            'price_product' => '1299000',
+            'image_address_product' => 'product_new2.jpg',
+            'describe_product' => 'Váy dạ hội nữ chất liệu voan phối ren, dáng dài, phù hợp dự tiệc.',
+            'specifications' => 'Việt Nam.;Dài váy 135cm;Đỏ, Xanh, Đen;S-M-L;Váy dạ hội;Voan, Ren;',
+            'sizes' => 'S,M,L',
+            'colors' => 'Đỏ,Xanh,Đen',
+        ]);
+        // Sản phẩm mới 3 - Quần jogger nam thể thao
+        DB::table('products')->insert([
+            'id_category' => '3',
+            'id_manufacturer' => '3',
+            'name_product' => 'Quần jogger nam thể thao',
+            'quantity_product' => '1000',
+            'price_product' => '249000',
+            'image_address_product' => 'product_new3.jpg',
+            'describe_product' => 'Quần jogger nam chất liệu thun lạnh, bo gấu, thích hợp tập gym, đi chơi.',
+            'specifications' => 'Việt Nam.;Dài quần 98cm;Đen, Xám, Xanh rêu;M-L-XL;Quần jogger;Thun lạnh;',
+            'sizes' => 'M,L,XL',
+            'colors' => 'Đen,Xám,Xanh rêu',
+        ]);
+        // Sản phẩm mới 4 - Áo len nữ cổ lọ
+        DB::table('products')->insert([
+            'id_category' => '1',
+            'id_manufacturer' => '2',
+            'name_product' => 'Áo len nữ cổ lọ',
+            'quantity_product' => '700',
+            'price_product' => '279000',
+            'image_address_product' => 'product_new4.jpg',
+            'describe_product' => 'Áo len nữ cổ lọ chất liệu len tăm, giữ ấm tốt, nhiều màu pastel.',
+            'specifications' => 'Việt Nam.;Dài áo 60cm;Hồng, Be, Xám, Trắng;S-M-L;Áo len;Len tăm;',
+            'sizes' => 'S,M,L',
+            'colors' => 'Hồng,Be,Xám,Trắng',
+        ]);
+        // Sản phẩm mới 5 - Chân váy jean nữ chữ A
+        DB::table('products')->insert([
+            'id_category' => '2',
+            'id_manufacturer' => '1',
+            'name_product' => 'Chân váy jean nữ chữ A',
+            'quantity_product' => '800',
+            'price_product' => '219000',
+            'image_address_product' => 'product_new5.jpg',
+            'describe_product' => 'Chân váy jean nữ dáng chữ A, trẻ trung, năng động, dễ phối đồ.',
+            'specifications' => 'Việt Nam.;Dài váy 45cm;Xanh nhạt, Xanh đậm;S-M-L;Chân váy;Jean;',
+            'sizes' => 'S,M,L',
+            'colors' => 'Xanh nhạt,Xanh đậm',
+        ]);
+        // Sản phẩm mới 6 - Áo vest nam công sở
+        DB::table('products')->insert([
+            'id_category' => '1',
+            'id_manufacturer' => '3',
+            'name_product' => 'Áo vest nam công sở',
+            'quantity_product' => '400',
+            'price_product' => '799000',
+            'image_address_product' => 'product_new6.jpg',
+            'describe_product' => 'Áo vest nam form slimfit, chất liệu tuyết mưa cao cấp, lịch lãm.',
+            'specifications' => 'Việt Nam.;Dài áo 75cm;Đen, Xám, Xanh navy;M-L-XL;Áo vest;Tuyết mưa;',
+            'sizes' => 'M,L,XL',
+            'colors' => 'Đen,Xám,Xanh navy',
+        ]);
+        // Sản phẩm mới 7 - Đầm babydoll nữ dễ thương
+        DB::table('products')->insert([
+            'id_category' => '2',
+            'id_manufacturer' => '2',
+            'name_product' => 'Đầm babydoll nữ dễ thương',
+            'quantity_product' => '600',
+            'price_product' => '259000',
+            'image_address_product' => 'product_new7.jpg',
+            'describe_product' => 'Đầm babydoll nữ dáng suông, chất liệu cotton, họa tiết hoa nhí.',
+            'specifications' => 'Việt Nam.;Dài váy 90cm;Hồng, Vàng, Xanh;S-M-L;Đầm babydoll;Cotton;',
+            'sizes' => 'S,M,L',
+            'colors' => 'Hồng,Vàng,Xanh',
+        ]);
+        // Sản phẩm mới 8 - Quần baggy nữ công sở
+        DB::table('products')->insert([
+            'id_category' => '3',
+            'id_manufacturer' => '1',
+            'name_product' => ' ',
+            'quantity_product' => '900',
+            'price_product' => '299000',
+            'image_address_product' => 'product_new8.jpg',
+            'describe_product' => 'Quần baggy nữ chất liệu tuyết mưa, form rộng, thoải mái, dễ phối áo sơ mi.',
+            'specifications' => 'Việt Nam.;Dài quần 92cm;Đen, Be, Xám;S-M-L-XL;Quần baggy;Tuyết mưa;',
+            'sizes' => 'S,M,L,XL',
+            'colors' => 'Đen,Be,Xám',
+        ]);
+        // Sản phẩm mới 9 - Áo khoác cardigan nữ dáng dài
+        DB::table('products')->insert([
+            'id_category' => '1',
+            'id_manufacturer' => '2',
+            'name_product' => 'Áo khoác cardigan nữ dáng dài',
+            'quantity_product' => '500',
+            'price_product' => '349000',
+            'image_address_product' => 'product_new9.jpg',
+            'describe_product' => 'Áo khoác cardigan nữ dáng dài, chất len mềm, phối cùng váy hoặc quần.',
+            'specifications' => 'Việt Nam.;Dài áo 90cm;Be, Xám, Hồng;S-M-L;Cardigan;Len mềm;',
+            'sizes' => 'S,M,L',
+            'colors' => 'Be,Xám,Hồng',
+        ]);
+        // Sản phẩm mới 10 - Quần short kaki nam năng động
+        DB::table('products')->insert([
+            'id_category' => '4',
+            'id_manufacturer' => '3',
+            'name_product' => 'Quần short kaki nam năng động',
+            'quantity_product' => '1100',
+            'price_product' => '179000',
+            'image_address_product' => 'product_new10.jpg',
+            'describe_product' => 'Quần short kaki nam, chất liệu kaki dày dặn, form trẻ trung, thoải mái.',
+            'specifications' => 'Việt Nam.;Dài quần 48cm;Đen, Xám, Xanh rêu;M-L-XL;Quần short;Kaki;',
+            'sizes' => 'M,L,XL',
+            'colors' => 'Đen,Xám,Xanh rêu',
+        ]);
     }
 }
