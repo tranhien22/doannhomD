@@ -66,8 +66,12 @@ Route::get('deleteuser',[AdminUserController::class,'deleteUser'])->name('user.d
 Route::get('/updateuser',[AdminUserController::class,'updateUser'])->name('user.updateUser');
 Route::post('/updateuser',[AdminUserController::class,'postUpdateUser'])->name('user.postUpdateUser');
 
+// Block/Unblock user admin
+Route::post('/user/{id}/block', [AdminUserController::class, 'blockUser'])->name('user.block');
+Route::post('/user/{id}/unblock', [AdminUserController::class, 'unblockUser'])->name('user.unblock');
+
 // List_user  Search User
-route::get('/search',[AdminUserController::class,'searchUser'])->name('user.searchUser');
+Route::get('/search',[AdminUserController::class,'searchUser'])->name('user.searchUser');
 
 Route::get('/admin/dashboard', [AdminUserController::class, 'dashboard'])->name('admin.dashboard');
 

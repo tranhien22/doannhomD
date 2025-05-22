@@ -37,14 +37,14 @@ class CustomerController extends Controller
             'role' => 0,
         ]);
         return redirect()->route('user.cus_login');
-
-
     }
+
     // login client
     public function indexLogin()
     {
         return view('cus_login');
     }
+
     public function authLogin(Request $request)
     {
         $request->validate([
@@ -53,7 +53,17 @@ class CustomerController extends Controller
         ]);
         $user = User::where('email', $request->email)->first();
 
-        if ($user && Hash::check($request->password, $user->password)) {
+        // Kiểm tra tài khoản có tồn tại không
+        if (!$user) {
+            return back()->withErrors(['email' => 'Invalid credentials']);
+        }
+
+        // Kiểm tra tài khoản bị chặn
+        if ($user->is_blocked) {
+            return back()->withErrors(['email' => 'Tài khoản của bạn đã bị chặn!']);
+        }
+
+        if (Hash::check($request->password, $user->password)) {
             if ($user->role == 1) {
                 // Nếu là admin
                 session(['id_user' => $user->id_user]);
