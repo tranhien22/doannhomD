@@ -8,7 +8,7 @@
                 <div class="card">
                     <h3 class="card-header text-center">Sửa Hãng Sản Xuất</h3>
                     <div class="card-body">
-                        <form action="{{ route('manufacturer.updateindex') }}" method="POST"
+                        <form action="{{ route('manufacturer.updatemanufacturer') }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
                             <input name="id" type="hidden" value="{{$manufacturer->id_manufacturer}}">
