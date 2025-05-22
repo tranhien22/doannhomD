@@ -45,6 +45,11 @@ class OrderController extends Controller
                     'address' => ""
                 ]);                
             }
+            
+            // Cập nhật số lượng đơn hàng
+            $orderCount = Order::where('id_user', $user_id)->count();
+            session(['order_count' => $orderCount]);
+            
             return redirect()->route('payment.paymentindex');
         }        
     }
@@ -76,5 +81,17 @@ class OrderController extends Controller
         $orderCount = Order::where('id_user', session('cart')['user_id'])->count();
         return response()->json(['count' => $orderCount]);
     }
+    public function deleteOrder($id_order)
+    {
+        $user_id = session('cart')['user_id'];
+        Order::where('id_order', $id_order)->delete();
+        
+        // Cập nhật số lượng đơn hàng
+        $orderCount = Order::where('id_user', $user_id)->count();
+        session(['order_count' => $orderCount]);
+        
+        return redirect()->back();
+    }
+
 
 }

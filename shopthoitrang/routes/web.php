@@ -102,3 +102,4 @@ Route::get('payment', [PaymentController::class, 'paymentIndex'])->name('payment
 Route::get('detailsorder', [detailsOrderController::class, 'addDetailsOrder'])->name('detailsorder.addDetailsOrder');
 Route::get('orderindex',[OrderController::class, 'orderIndex'])->name('order.orderIndex');
 Route::get('detailsorderindex',[detailsOrderController::class, 'detailsOrderIndex'])->name('detailsorder.detailsOrderIndex');
+Route::get('deleteorder/{id_order}', [OrderController::class, 'deleteOrder'])->name('order.deleteOrder');
