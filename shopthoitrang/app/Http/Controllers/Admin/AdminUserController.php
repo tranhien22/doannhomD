@@ -61,8 +61,27 @@ class AdminUserController extends Controller
      return view('admin.list.list_user',['users'=>$users, 'search'=>$search]);
     }
 
+    // Chặn người dùng
+    public function blockUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_blocked = true;
+        $user->save();
+        return redirect()->back()->with('success', 'Đã chặn người dùng.');
+    }
+
+    // Mở chặn người dùng
+    public function unblockUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_blocked = false;
+        $user->save();
+        return redirect()->back()->with('success', 'Đã mở chặn người dùng.');
+    }
+    
     public function dashboard()
     {
         return view('admin.dashboard');
     }
+
 }
