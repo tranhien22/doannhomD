@@ -56,6 +56,9 @@ class CartController extends Controller
         // Lấy tổng số lượng sản phẩm trong giỏ hàng
         $cartCount = Cart::where('id_user', session('cart')['user_id'])->sum('quantity_product');
         
+        // Cập nhật session cart count
+        session(['cart_count' => $cartCount]);
+        
         return response()->json([
             'success' => true,
             'message' => 'Thêm vào giỏ hàng thành công',
@@ -81,6 +84,11 @@ class CartController extends Controller
         Cart::where('id_user', $user_id)
             ->where('id_product', $productId)
             ->delete();
+            
+        // Cập nhật lại số lượng giỏ hàng
+        $cartCount = Cart::where('id_user', $user_id)->sum('quantity_product');
+        session(['cart_count' => $cartCount]);
+        
         return redirect()->back();
     }
 

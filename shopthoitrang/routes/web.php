@@ -117,6 +117,7 @@ Route::get('detailsorder', [detailsOrderController::class, 'addDetailsOrder'])->
 Route::get('orderindex',[OrderController::class, 'orderIndex'])->name('order.orderIndex');
 Route::get('detailsorderindex',[detailsOrderController::class, 'detailsOrderIndex'])->name('detailsorder.detailsOrderIndex');
 
+
 //Post
 Route::get('detailpost',[PostController::class, 'detailPost'])->name('post.detailpost');
 Route::get('addpost',[PostController::class, 'indexAddPost'])->name('post.indexaddpost');
@@ -127,3 +128,6 @@ Route::get('deletepost',[PostController::class, 'deletePost'])->name('post.delet
 Route::get('updatepost',[PostController::class, 'indexUpdatePost'])->name('post.indexupdatepost');
 Route::post('updatepost',[PostController::class, 'updatePost'])->name('post.updatepost');
 Route::post('searchpost',[PostController::class, 'searchPost'])->name('post.searchpost');
+
+Route::get('deleteorder/{id_order}', [OrderController::class, 'deleteOrder'])->name('order.deleteOrder');
+
