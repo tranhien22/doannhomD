@@ -110,6 +110,15 @@ class ProductController extends Controller
         $product = Product::findProductById($request->get('id'));
         $category = Category::all();
         $manufacturer = Manufacturer::getAllManufacturers();
+        if (!$product) {
+            // Nếu không tìm thấy sản phẩm, trả về view với thông báo lỗi và không truyền biến $products
+            return view('admin.product.updateproduct', [
+                'products' => null,
+                'categorys' => $category,
+                'manufacturers' => $manufacturer,
+                'notfound' => true
+            ]);
+        }
         return view('admin.product.updateproduct', [
             'products' => $product,
             'categorys' => $category,
@@ -131,6 +140,12 @@ class ProductController extends Controller
         
         try {
             $product = Product::findProductById($data['id']);
+            if (!$product) {
+                // Nếu không tìm thấy sản phẩm, trả về lại trang cập nhật với thông báo lỗi
+                return redirect()->back()
+                    ->with('error', 'Không tìm thấy sản phẩm để cập nhật. Có thể sản phẩm đã bị xóa ở nơi khác.')
+                    ->withInput();
+            }
 
             if($request->hasFile('image_address_product')) {
                 // Xóa ảnh cũ
