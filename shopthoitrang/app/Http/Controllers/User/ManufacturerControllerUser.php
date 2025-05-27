@@ -16,7 +16,19 @@ class ManufacturerControllerUser extends Controller
     public function showProductsByManufacturer($id)
     {
         $manufacturer = Manufacturer::findOrFail($id);
-        $products = Product::where('id_manufacturer', $id)->paginate(12);
+
+        $page = request()->query('page', 1);
+
+        if (!is_numeric($page) || $page < 1) {
+            return redirect()->route('manufacturer.products', ['id' => $id])->with('error', 'Tham số trang không hợp lệ.');
+        }
+
+        $products = Product::where('id_manufacturer', $id)->paginate(6);
+
+        // Check if the requested page is valid within the paginated results
+        if ($products->currentPage() > $products->lastPage() && $products->lastPage() > 0) {
+             return redirect()->route('manufacturer.products', ['id' => $id])->with('error', 'Tham số trang không hợp lệ.');
+        }
 
         return view('user.products_by_manufacturer', [
             'manufacturer' => $manufacturer,
