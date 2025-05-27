@@ -23,14 +23,18 @@ class ProductController extends Controller
                     ->with('error', 'Tham số trang không hợp lệ');
             }
 
-            $products = Product::getProductsWithPagination(2);
+            // Get total number of products first
+            $totalProducts = Product::count();
+            $perPage = 2;
+            $lastPage = ceil($totalProducts / $perPage);
 
-            // Check if the requested page is valid within the paginated results
-            if ($products->currentPage() > $products->lastPage() && $products->lastPage() > 0) {
+            // Check if requested page exceeds total pages
+            if ($page > $lastPage && $lastPage > 0) {
                 return redirect()->route('product.listproduct')
                     ->with('error', 'Tham số trang không hợp lệ');
             }
 
+            $products = Product::getProductsWithPagination(2);
             $category = Category::all();
             $manufacturer = Manufacturer::getAllManufacturers();
             return view('admin.product.listproduct', [
