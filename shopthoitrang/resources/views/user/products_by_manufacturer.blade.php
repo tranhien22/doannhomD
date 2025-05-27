@@ -1,6 +1,13 @@
 @extends('user.dashboard_user')  
 
 @section('content')
+
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
 <!-- Manufacturer Header -->
 <div class="manufacturer-header">
     <div class="container">
