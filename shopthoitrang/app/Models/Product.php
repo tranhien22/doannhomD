@@ -27,41 +27,49 @@ class Product extends Model
 
     // Validation rules
     public static $rules = [
-        'name_product' => 'required|max:100',
-        'quantity_product' => 'required|integer|min:0',
-        'price_product' => 'required|numeric|min:0',
+        'name_product' => 'required|max:100|regex:/^[^<>]*$/',
+        'quantity_product' => 'required|integer|min:0|max:999999',
+        'price_product' => 'required|numeric|min:0|max:999999999',
         'sizes' => ['required', 'regex:/^[a-zA-Z0-9\s,]{1,10}$/', 'max:10'],
         'image_address_product' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        'describe_product' => 'required|max:500',
+        'describe_product' => 'required|max:500|regex:/^[^<>]*$/',
         'id_category' => 'required|exists:categories,id_category',
         'id_manufacturer' => 'required|exists:manufacturers,id_manufacturer',
-        'specifications' => 'nullable|max:500',
-        'colors' => 'nullable|string'
+        'specifications' => 'nullable|max:500|regex:/^[^<>]*$/',
+        'colors' => 'nullable|string|regex:/^[a-zA-Z0-9\s,ÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮĐàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữđ]*$/|max:50'
     ];
 
     // Custom error messages
     public static $messages = [
         'name_product.required' => 'Tên sản phẩm không được để trống',
-        'name_product.max' => 'Bạn đã nhập quá 100 ký tự',
+        'name_product.max' => 'Tên sản phẩm không được vượt quá 100 ký tự',
+        'name_product.regex' => 'Tên sản phẩm không được chứa ký tự đặc biệt',
         'quantity_product.required' => 'Số lượng không được để trống',
-        'quantity_product.integer' => 'Yêu cầu nhập trường chỉ nhập ký tự số nguyên',
-        'quantity_product.min' => 'Số lượng phải lớn hơn hoặc bằng 0',
+        'quantity_product.integer' => 'Số lượng phải là số nguyên',
+        'quantity_product.min' => 'Số lượng không được nhỏ hơn 0',
+        'quantity_product.max' => 'Số lượng không được vượt quá 999999',
         'price_product.required' => 'Giá không được để trống',
-        'price_product.numeric' => 'Trường chữ nhập ký tự số yêu cầu nhập lại',
-        'price_product.min' => 'Giá phải lớn hơn hoặc bằng 0',
-        'sizes.required' => 'Kích cỡ không được để trống',
-        'sizes.regex' => 'Bạn đã nhập sai ký tự ngoài số và chữ yêu cầu nhập lại',
-        'sizes.max' => 'Kích cỡ không được quá 10 ký tự',
+        'price_product.numeric' => 'Giá phải là số',
+        'price_product.min' => 'Giá không được nhỏ hơn 0',
+        'price_product.max' => 'Giá không được vượt quá 999999999',
+        'sizes.required' => 'Kích thước không được để trống',
+        'sizes.regex' => 'Kích thước chỉ được chứa chữ cái, số và dấu phẩy',
+        'sizes.max' => 'Kích thước không được vượt quá 10 ký tự',
         'image_address_product.required' => 'Ảnh sản phẩm không được để trống',
         'image_address_product.image' => 'File phải là hình ảnh',
-        'image_address_product.mimes' => 'Định dạng ảnh phải là: jpeg, png, jpg, gif',
-        'image_address_product.max' => 'Kích thước ảnh không được vượt quá 2MB',
+        'image_address_product.mimes' => 'Hình ảnh phải có định dạng jpeg, png, jpg hoặc gif',
+        'image_address_product.max' => 'Kích thước hình ảnh không được vượt quá 2MB',
         'describe_product.required' => 'Mô tả không được để trống',
-        'describe_product.max' => 'Bạn đã nhập quá ký tự yêu cầu chỉ nhập không quá 500 ký tự',
+        'describe_product.max' => 'Mô tả không được vượt quá 500 ký tự',
+        'describe_product.regex' => 'Mô tả không được chứa ký tự đặc biệt',
         'id_category.required' => 'Danh mục không được để trống',
         'id_category.exists' => 'Danh mục không tồn tại',
-        'id_manufacturer.required' => 'Nhà sản xuất không được để trống',
-        'id_manufacturer.exists' => 'Nhà sản xuất không tồn tại'
+        'id_manufacturer.required' => 'Hãng sản xuất không được để trống',
+        'id_manufacturer.exists' => 'Hãng sản xuất không tồn tại',
+        'specifications.max' => 'Thông số kỹ thuật không được vượt quá 500 ký tự',
+        'specifications.regex' => 'Thông số kỹ thuật không được chứa ký tự đặc biệt',
+        'colors.regex' => 'Màu sắc chỉ được chứa chữ cái, số và dấu phẩy',
+        'colors.max' => 'Màu sắc không được vượt quá 50 ký tự'
     ];
 
     // Relationships
@@ -234,5 +242,17 @@ class Product extends Model
     public function getSizesArray()
     {
         return explode(',', $this->sizes);
+    }
+
+    // Add method to check for duplicate products
+    public static function isDuplicate($data, $excludeId = null)
+    {
+        $query = self::where('name_product', $data['name_product']);
+        
+        if ($excludeId) {
+            $query->where('id_product', '!=', $excludeId);
+        }
+        
+        return $query->exists();
     }
 }

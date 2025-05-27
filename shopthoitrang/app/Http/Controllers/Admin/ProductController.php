@@ -9,18 +9,32 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Manufacturer;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
-    public function indexProduct() {
-        $products = Product::getProductsWithPagination(2);
-        $category = Category::all();
-        $manufacturer = Manufacturer::getAllManufacturers();
-        return view('admin.product.listproduct', [
-            'products' => $products,
-            'categorys' => $category,
-            'manufacturers' => $manufacturer,
-        ]);
+    public function indexProduct(Request $request) {
+        try {
+            $page = $request->query('page', 1);
+            
+            // Validate page parameter
+            if (!is_numeric($page) || $page < 1) {
+                return redirect()->route('product.listproduct')
+                    ->with('error', 'Tham số trang không hợp lệ');
+            }
+
+            $products = Product::getProductsWithPagination(2);
+            $category = Category::all();
+            $manufacturer = Manufacturer::getAllManufacturers();
+            return view('admin.product.listproduct', [
+                'products' => $products,
+                'categorys' => $category,
+                'manufacturers' => $manufacturer,
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->route('product.listproduct')
+                ->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+        }
     }    
 
     public function indexAddProduct(){
@@ -32,6 +46,48 @@ class ProductController extends Controller
         ]);
     }
     
+    private function validateInput($data) {
+        // Check for whitespace-only input
+        $textFields = ['name_product', 'describe_product', 'specifications'];
+        foreach ($textFields as $field) {
+            if (isset($data[$field]) && trim($data[$field]) === '') {
+                return false;
+            }
+        }
+
+        // Check for full-width characters
+        $fullWidthPattern = '/[\x{3000}-\x{303F}\x{FF00}-\x{FFEF}]/u';
+        foreach ($textFields as $field) {
+            if (isset($data[$field]) && preg_match($fullWidthPattern, $data[$field])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function validateImage($file) {
+        // Check file extension
+        $allowedExtensions = ['jpeg', 'png', 'jpg', 'gif'];
+        $extension = strtolower($file->getClientOriginalExtension());
+        
+        if (!in_array($extension, $allowedExtensions)) {
+            return false;
+        }
+
+        // Check file size (2MB max)
+        if ($file->getSize() > 2 * 1024 * 1024) {
+            return false;
+        }
+
+        // Check if file is actually an image
+        if (!getimagesize($file->getPathname())) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function addProduct(Request $request){
         // Validate the request
         $validator = Validator::make($request->all(), Product::$rules, Product::$messages);
@@ -44,9 +100,24 @@ class ProductController extends Controller
 
         $data = $request->all();
 
+        // Validate whitespace and full-width characters
+        if (!$this->validateInput($data)) {
+            return redirect()->back()
+                ->with('error', 'Không được phép nhập toàn khoảng trắng hoặc ký tự full-width')
+                ->withInput();
+        }
+
         // Handle image upload
         if($request->hasFile('image_address_product')) {
             $file = $request->file('image_address_product');
+            
+            // Validate image
+            if (!$this->validateImage($file)) {
+                return redirect()->back()
+                    ->with('error', 'File không phải là hình ảnh hợp lệ hoặc kích thước quá lớn')
+                    ->withInput();
+            }
+
             $ex = $file->getClientOriginalExtension();
             $filename = time().'.'.$ex;
             $file->move('uploads/productimage/',$filename);
@@ -89,17 +160,31 @@ class ProductController extends Controller
         try {
             $product = Product::findProductById($request->get('id'));
             
+            if (!$product) {
+                return redirect()->back()
+                    ->with('error', 'Không tìm thấy sản phẩm để xóa');
+            }
+
             // Delete the product image if it exists
-            if ($product && $product->image_address_product) {
+            if ($product->image_address_product) {
                 $image_path = 'uploads/productimage/' . $product->image_address_product;
                 if (File::exists($image_path)) {
                     File::delete($image_path);
                 }
             }
 
-            Product::destroy($request->get('id'));
-            return redirect()->route('product.listproduct')
-                ->with('success', 'Xóa sản phẩm thành công');
+            // Use transaction to ensure atomicity
+            DB::beginTransaction();
+            try {
+                Product::destroy($request->get('id'));
+                DB::commit();
+                return redirect()->route('product.listproduct')
+                    ->with('success', 'Xóa sản phẩm thành công');
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return redirect()->back()
+                    ->with('error', 'Có lỗi xảy ra khi xóa sản phẩm: ' . $e->getMessage());
+            }
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Có lỗi xảy ra khi xóa sản phẩm: ' . $e->getMessage());
@@ -107,28 +192,42 @@ class ProductController extends Controller
     }
 
     public function indexUpdateProduct(Request $request){
-        $product = Product::findProductById($request->get('id'));
-        $category = Category::all();
-        $manufacturer = Manufacturer::getAllManufacturers();
-        if (!$product) {
-            // Nếu không tìm thấy sản phẩm, trả về view với thông báo lỗi và không truyền biến $products
+        try {
+            $id = $request->get('id');
+            
+            // Validate ID format
+            if (!is_numeric($id)) {
+                return redirect()->route('product.listproduct')
+                    ->with('error', 'ID sản phẩm không hợp lệ');
+            }
+
+            $product = Product::findProductById($id);
+            $category = Category::all();
+            $manufacturer = Manufacturer::getAllManufacturers();
+            
+            if (!$product) {
+                return redirect()->route('product.listproduct')
+                    ->with('error', 'Không tìm thấy sản phẩm với ID: ' . $id);
+            }
+
             return view('admin.product.updateproduct', [
-                'products' => null,
+                'products' => $product,
                 'categorys' => $category,
-                'manufacturers' => $manufacturer,
-                'notfound' => true
+                'manufacturers' => $manufacturer
             ]);
+        } catch (\Exception $e) {
+            return redirect()->route('product.listproduct')
+                ->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
-        return view('admin.product.updateproduct', [
-            'products' => $product,
-            'categorys' => $category,
-            'manufacturers' => $manufacturer
-        ]);
     }
     
     public function updateProduct(Request $request){
+        // Define validation rules specifically for update, making image optional
+        $updateRules = Product::$rules;
+        $updateRules['image_address_product'] = 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048';
+
         // Sử dụng rules giống như khi thêm mới
-        $validator = Validator::make($request->all(), Product::$rules, Product::$messages);
+        $validator = Validator::make($request->all(), $updateRules, Product::$messages);
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -137,17 +236,45 @@ class ProductController extends Controller
         }
 
         $data = $request->all();
+
+        // Validate whitespace and full-width characters
+        if (!$this->validateInput($data)) {
+            return redirect()->back()
+                ->with('error', 'Không được phép nhập toàn khoảng trắng hoặc ký tự full-width')
+                ->withInput();
+        }
         
         try {
+            DB::beginTransaction();
+            
             $product = Product::findProductById($data['id']);
             if (!$product) {
-                // Nếu không tìm thấy sản phẩm, trả về lại trang cập nhật với thông báo lỗi
+                DB::rollBack();
                 return redirect()->back()
                     ->with('error', 'Không tìm thấy sản phẩm để cập nhật. Có thể sản phẩm đã bị xóa ở nơi khác.')
                     ->withInput();
             }
 
+            // Check if product was modified by another user
+            if ($product->updated_at != $request->input('updated_at')) {
+                DB::rollBack();
+                return redirect()->back()
+                    ->with('error', 'Sản phẩm đã được cập nhật bởi người dùng khác. Vui lòng tải lại trang và thử lại.')
+                    ->withInput();
+            }
+
+            // Handle image update
             if($request->hasFile('image_address_product')) {
+                $file = $request->file('image_address_product');
+                
+                // Validate image
+                if (!$this->validateImage($file)) {
+                    DB::rollBack();
+                    return redirect()->back()
+                        ->with('error', 'File không phải là hình ảnh hợp lệ hoặc kích thước quá lớn')
+                        ->withInput();
+                }
+
                 // Xóa ảnh cũ
                 $image_cu = 'uploads/productimage/' . $product->image_address_product;
                 if(File::exists($image_cu)) {
@@ -155,11 +282,13 @@ class ProductController extends Controller
                 }
                 
                 // Upload ảnh mới
-                $file = $request->file('image_address_product');
                 $ex = $file->getClientOriginalExtension();
                 $filename = time().'.'.$ex;
                 $file->move('uploads/productimage/',$filename);
                 $data['image_address_product'] = $filename;
+            } else {
+                // Keep existing image if no new image is uploaded
+                $data['image_address_product'] = $product->image_address_product;
             }
 
             // Update product
@@ -173,12 +302,14 @@ class ProductController extends Controller
                 'specifications' => $data['specifications'] ?? null,
                 'sizes' => $data['sizes'] ?? null,
                 'colors' => $data['colors'] ?? null,
-                'image_address_product' => $data['image_address_product'] ?? $product->image_address_product,
+                'image_address_product' => $data['image_address_product'],
             ]);
 
+            DB::commit();
             return redirect()->route('product.listproduct')
                 ->with('success', 'Cập nhật sản phẩm thành công');
         } catch (\Exception $e) {
+            DB::rollBack();
             // Nếu upload ảnh mới mà lỗi thì xóa ảnh mới
             if (isset($data['image_address_product']) && $request->hasFile('image_address_product')) {
                 $image_path = 'uploads/productimage/' . $data['image_address_product'];

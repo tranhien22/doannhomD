@@ -8,6 +8,15 @@
                 <div class="card">
                     <h3 class="card-header text-center">Thêm Sản Phẩm</h3>
                     <div class="card-body">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         <form action="{{ route('product.addproduct') }}" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                             @csrf
                             <div class="row">
@@ -172,6 +181,11 @@
     </div>
 </main>
 <script>
+    // Disable submit button after click
+    document.querySelector('.addproduct-form form').addEventListener('submit', function() {
+        this.querySelector('button[type="submit"]').setAttribute('disabled', 'disabled');
+    });
+
     function handleCategoryChange() {
         var selectedCategory = document.getElementById('id_category').value;
         document.getElementById('selected_category').value = selectedCategory;
@@ -205,7 +219,7 @@
 
     function validatePrice(input) {
         const errorElement = document.getElementById('price_product_error');
-        if (!/^\d+$/.test(input.value.trim())) {
+        if (!/^\d+(\.\d+)?$/.test(input.value.trim())) {
             errorElement.textContent = 'Trường chữ nhập ký tự số yêu cầu nhập lại';
             return false;
         }
@@ -263,14 +277,122 @@
     }
 
     function validateForm() {
-        const nameValid = validateProductName(document.getElementById('name_product'));
-        const quantityValid = validateQuantity(document.getElementById('quantity_product'));
-        const priceValid = validatePrice(document.getElementById('price_product'));
-        const sizesValid = validateSizes(document.getElementById('sizes'));
-        const descriptionValid = validateDescription(document.getElementById('describe_product'));
-        const imageValid = validateImage(document.getElementById('image_address_product'));
-        const specificationsValid = validateSpecifications(document.getElementById('specifications'));
-        return nameValid && quantityValid && priceValid && sizesValid && descriptionValid && imageValid && specificationsValid;
+        // Prevent HTML injection
+        const textFields = ['name_product', 'describe_product', 'specifications'];
+        for (const field of textFields) {
+            const value = document.getElementById(field).value;
+            if (value.includes('<') || value.includes('>')) {
+                alert('Không được phép nhập các ký tự HTML (<, >)');
+                return false;
+            }
+        }
+
+        // Check text length
+        const nameProduct = document.getElementById('name_product').value;
+        if (nameProduct.length > 100) {
+            alert('Tên sản phẩm không được vượt quá 100 ký tự');
+            return false;
+        }
+
+        const describeProduct = document.getElementById('describe_product').value;
+        if (describeProduct.length > 500) {
+            alert('Mô tả không được vượt quá 500 ký tự');
+            return false;
+        }
+
+        const specifications = document.getElementById('specifications').value;
+        if (specifications && specifications.length > 500) {
+            alert('Thông số kỹ thuật không được vượt quá 500 ký tự');
+            return false;
+        }
+
+        // Check for whitespace-only input
+        const inputs = document.querySelectorAll('input[type="text"], textarea');
+        for (const input of inputs) {
+            if (input.value.trim() === '') {
+                alert('Không được phép nhập toàn khoảng trắng');
+                return false;
+            }
+        }
+
+        // Validate numeric input
+        const quantityProduct = document.getElementById('quantity_product').value;
+        if (!/^\d+$/.test(quantityProduct)) {
+            alert('Số lượng phải là số nguyên');
+            return false;
+        }
+
+        const priceProduct = document.getElementById('price_product').value;
+        if (!/^\d+(\.\d+)?$/.test(priceProduct)) {
+            alert('Giá phải là số');
+            return false;
+        }
+
+        // Check for full-width numbers
+        const fullWidthNumbers = /[０-９]/;
+        if (fullWidthNumbers.test(quantityProduct) || fullWidthNumbers.test(priceProduct)) {
+            alert('Không được phép nhập số dạng full-width');
+            return false;
+        }
+
+        // Validate select options
+        const categorySelect = document.getElementById('id_category');
+        if (categorySelect.value === '') {
+            alert('Vui lòng chọn danh mục');
+            return false;
+        }
+
+        const manufacturerSelect = document.getElementById('id_manufacturer');
+        if (manufacturerSelect.value === '') {
+            alert('Vui lòng chọn hãng sản xuất');
+            return false;
+        }
+
+        return true;
     }
+
+    // Prevent form submission if no option is selected
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const categorySelect = document.getElementById('id_category');
+        const manufacturerSelect = document.getElementById('id_manufacturer');
+
+        if (categorySelect.value === '' || manufacturerSelect.value === '') {
+            e.preventDefault();
+            alert('Vui lòng chọn đầy đủ danh mục và hãng sản xuất');
+        }
+    });
+
+    // Prevent paste of HTML content
+    document.addEventListener('paste', function(e) {
+        const target = e.target;
+        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+            if (pastedText.includes('<') || pastedText.includes('>')) {
+                e.preventDefault();
+                alert('Không được phép dán nội dung HTML');
+            }
+        }
+    });
+
+    // Prevent paste of non-numeric characters in numeric fields
+    document.addEventListener('paste', function(e) {
+        const target = e.target;
+        if (target.id === 'quantity_product' || target.id === 'price_product') {
+            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+            if (!/^\d+(\.\d+)?$/.test(pastedText)) {
+                e.preventDefault();
+                alert('Chỉ được phép dán số');
+            }
+        }
+    });
+
+    // Prevent input of non-numeric characters in numeric fields
+    document.getElementById('quantity_product').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^\d]/g, '');
+    });
+
+    document.getElementById('price_product').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^\d.]/g, '');
+    });
 </script>
 @endsection

@@ -16,6 +16,7 @@
                         <form action="{{ route('product.updateproduct') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="id" value="{{ $products?->id_product ?? '' }}">
+                            <input type="hidden" name="updated_at" value="{{ $products?->updated_at ?? '' }}">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
@@ -128,8 +129,8 @@
                                     <div class="form-group mb-3">
                                         <div class="row">
                                             <div class="col-md-3"><span>Mô tả</span></div>
-                                            <div class="col-md-9"> <input type="text" id="describe_product"
-                                                    class="form-control" name="describe_product" value="{{ $products?->describe_product ?? '' }}" required autofocus>
+                                            <div class="col-md-9"> <textarea id="describe_product"
+                                                    class="form-control" name="describe_product" required autofocus rows="4" style="font-size: 1.1rem;">{{ $products?->describe_product ?? '' }}</textarea>
                                             </div>
                                         </div>
                                         @if ($errors->has('describe_product'))
@@ -139,8 +140,8 @@
                                     <div class="form-group mb-3">
                                         <div class="row">
                                             <div class="col-md-3"><span>Thông số</span></div>
-                                            <div class="col-md-9"> <input type="text" id="specifications"
-                                                    class="form-control" name="specifications" value="{{ $products?->specifications ?? '' }}" required autofocus></div>
+                                            <div class="col-md-9"> <textarea id="specifications"
+                                                    class="form-control" name="specifications" required autofocus rows="4" style="font-size: 1.1rem;">{{ $products?->specifications ?? '' }}</textarea></div>
                                         </div>
                                         @if ($errors->has('specifications'))
                                         <span class="text-danger">{{ $errors->first('specifications') }}</span>
