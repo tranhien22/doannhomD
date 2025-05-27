@@ -24,6 +24,13 @@ class ProductController extends Controller
             }
 
             $products = Product::getProductsWithPagination(2);
+
+            // Check if the requested page is valid within the paginated results
+            if ($products->currentPage() > $products->lastPage() && $products->lastPage() > 0) {
+                return redirect()->route('product.listproduct')
+                    ->with('error', 'Tham số trang không hợp lệ');
+            }
+
             $category = Category::all();
             $manufacturer = Manufacturer::getAllManufacturers();
             return view('admin.product.listproduct', [
