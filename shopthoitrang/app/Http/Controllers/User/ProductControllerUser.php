@@ -20,9 +20,20 @@ class ProductControllerUser extends Controller
             return redirect()->back()->with('error', 'Vui lòng nhập từ khóa để tìm kiếm.');
         }
 
+        $page = $request->query('page', 1);
+
+        if (!is_numeric($page) || $page < 1) {
+             return redirect()->route('user.searchProduct', ['keyword' => $keyword])->with('error', 'Tham số trang không hợp lệ.');
+        }
+
         // Tìm kiếm sản phẩm chỉ theo tên
         $products = Product::where('name_product', 'LIKE', '%' . $keyword . '%')
                           ->paginate(12);
+
+        // Check if the requested page is valid within the paginated results
+        if ($products->currentPage() > $products->lastPage() && $products->lastPage() > 0) {
+             return redirect()->route('user.searchProduct', ['keyword' => $keyword])->with('error', 'Tham số trang không hợp lệ.');
+        }
 
         // Lấy danh mục và hãng sản xuất để hiển thị trong bộ lọc
         $categories = Category::all();
@@ -30,6 +41,7 @@ class ProductControllerUser extends Controller
 
         return view('user.searchProduct', compact('products', 'categories', 'manufacturers', 'keyword'));
     }
+
 
     public function filterProduct(Request $request)
     {
