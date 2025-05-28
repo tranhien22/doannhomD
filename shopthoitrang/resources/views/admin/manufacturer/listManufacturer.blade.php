@@ -8,6 +8,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
+
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
 <main class="listmanufacturer-form py-4">
     <div class="container-fluid px-4">
         <div class="card shadow-sm mb-4">
@@ -47,7 +55,7 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="btn-group btn-group-sm">
-                                        <a href="" class="btn btn-primary">
+                                        <a href="{{ route('manufacturer.indexupdatemanufacturer', ['id' => $manufacturer->id_manufacturer]) }}" class="btn btn-primary">
                                             <i class="bi bi-pencil-square"></i> Sửa
                                         </a>
                                         <a href="{{ route('manufacturer.deletemanufacturer', ['id' => $manufacturer->id_manufacturer]) }}" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn xóa hãng sản xuất này?')">
