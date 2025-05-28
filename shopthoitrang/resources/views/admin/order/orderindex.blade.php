@@ -14,6 +14,19 @@
                         </div>
                     </div>
                 </div>
+
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
                 <div class="mt-4 mb-5 form-wrapper">
                     <form action="{{ route('admin.adminSearchOrder') }}">
                         <input type="text" name="id" class="input-search">
@@ -43,7 +56,7 @@
                                     <a href="{{ route('admin.adminDetailsOrderIndex', ['id_order' => $orders->id_order]) }}"
                                         class="mx-1 btn btn-primary">Xem</a>
                                     <a href="{{ route('admin.adminDetailsOrderDelete', ['id_order' => $orders->id_order]) }}"
-                                        class="btn btn-danger">Xóa</a>
+                                        class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này? Có xác nhận của khách hàng.')">Hủy đơn</a>
                                 </td>
                             </tr>
                         @endforeach
