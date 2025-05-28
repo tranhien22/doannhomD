@@ -83,14 +83,35 @@ class OrderController extends Controller
     }
     public function deleteOrder($id_order)
     {
-        $user_id = session('cart')['user_id'];
-        Order::where('id_order', $id_order)->delete();
-        
-        // Cập nhật số lượng đơn hàng
-        $orderCount = Order::where('id_user', $user_id)->count();
-        session(['order_count' => $orderCount]);
-        
-        return redirect()->back();
+        try {
+            DB::beginTransaction();
+            
+            $user_id = session('cart')['user_id'];
+            
+            // Check if order exists and belongs to user
+            $order = Order::where('id_order', $id_order)
+                         ->where('id_user', $user_id)
+                         ->first();
+                         
+            if (!$order) {
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Xóa không hợp lệ vui lòng load lại trang');
+            }
+            
+            // Delete the order
+            $order->delete();
+            
+            // Update order count
+            $orderCount = Order::where('id_user', $user_id)->count();
+            session(['order_count' => $orderCount]);
+            
+            DB::commit();
+            return redirect()->back()->with('success', 'Xóa đơn hàng thành công');
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Xóa không hợp lệ vui lòng load lại trang');
+        }
     }
 
 

@@ -14,6 +14,13 @@
                         của bạn
                     </h4>
                 </div>
+
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
                 <form action="{{ route('order.orderIndex') }}">
                     @foreach($order as $item)
                         @if(!empty($item))

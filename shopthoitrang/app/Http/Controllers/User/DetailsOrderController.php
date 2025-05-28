@@ -58,6 +58,21 @@ class DetailsOrderController extends Controller
     public function detailsOrderIndex(Request $request)
     {
         $id_order = $request->get('id_order');
+        $id_user = $request->get('id_user');
+        
+        // Kiểm tra nếu id_order không phải là số
+        if (!is_numeric($id_order)) {
+            return redirect()->route('order.orderIndex')->with('error', 'Không tìm thấy trang');
+        }
+        
+        // Kiểm tra xem đơn hàng có tồn tại và thuộc về user không
+        $orderExists = Order::where('id_order', $id_order)
+                          ->where('id_user', $id_user)
+                          ->exists();
+                          
+        if (!$orderExists) {
+            return redirect()->route('order.orderIndex')->with('error', 'Không tìm thấy trang');
+        }
 
         $order = DB::table('products')
         ->join('detailsorder', 'products.id_product', "=", 'detailsorder.id_product')
