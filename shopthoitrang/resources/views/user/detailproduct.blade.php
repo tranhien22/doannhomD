@@ -404,13 +404,32 @@
         // Lấy số lượng sản phẩm trong giỏ hàng khi trang được tải
         updateCartCount();
 
+        let lastClickTime = 0; // Biến lưu thời điểm nhấn nút cuối cùng
+
         $('#addToCartBtn').click(function(e) {
             e.preventDefault();
+            
+            // Kiểm tra thời gian giữa các lần nhấn
+            const currentTime = new Date().getTime();
+            const timeDiff = currentTime - lastClickTime;
+            
+            if (timeDiff < 10000) { // 10000ms = 10 giây
+                const remainingTime = Math.ceil((10000 - timeDiff) / 1000);
+                $('#alert-message').text(`Vui lòng đợi ${remainingTime} giây trước khi thêm sản phẩm tiếp theo`);
+                $('#alert-container').fadeIn();
+                setTimeout(function() {
+                    $('#alert-container').fadeOut();
+                }, 2000);
+                return;
+            }
             
             // Kiểm tra form trước khi gửi
             if (!validateForm()) {
                 return;
             }
+            
+            // Cập nhật thời điểm nhấn nút
+            lastClickTime = currentTime;
             
             $.ajax({
                 url: "{{ route('cart.addCard') }}",

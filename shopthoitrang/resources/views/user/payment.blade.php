@@ -5,6 +5,7 @@
 @section('content')
 <link type="text/css" rel="stylesheet" href="{{ asset('css/style.css') }}" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <main class="cart-form">
     <div class="container px-4 px-lg-5 my-5">
         <div class="row gx-4 gx-lg-5 align-items-center">
@@ -157,25 +158,111 @@
     .cart-form {
         margin-top: 20px;
     }
+
+    /* Alert styles */
+    .alert {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        min-width: 300px;
+        padding: 15px 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        text-align: center;
+        display: none;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        color: #856404;
+    }
+
+    .alert i {
+        margin-right: 10px;
+    }
+
+    .input-address.error {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
 </style>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    const plus = document.querySelector(".plus"),
-        minus = document.querySelector(".minus"),
-        num = document.querySelector(".num");
-    let a = 1;
-    plus.addEventListener("click", () => {
-        a++;
-        a = (a < 10) ? "0" + a : a;
-        num.innerText = a;
-    });
-    minus.addEventListener("click", () => {
-        if (a > 1) {
-            a--;
-            a = (a < 10) ? "0" + a : a;
-            num.innerText = a;
+    $(document).ready(function() {
+        // Thêm container cho thông báo
+        if (!$('#alert-container').length) {
+            $('body').append(`
+                <div id="alert-container" class="alert" role="alert">
+                    <i class="fa fa-exclamation-circle"></i>
+                    <span id="alert-message"></span>
+                </div>
+            `);
         }
 
+        let lastPaymentClickTime = 0;
+        const paymentForm = $('.form-cart');
+        
+        paymentForm.on('submit', function(e) {
+            e.preventDefault();
+            
+            // Kiểm tra thời gian giữa các lần nhấn
+            const currentTime = new Date().getTime();
+            const timeDiff = currentTime - lastPaymentClickTime;
+            
+            if (timeDiff < 10000) { // 10000ms = 10 giây
+                const remainingTime = Math.ceil((10000 - timeDiff) / 1000);
+                $('#alert-container')
+                    .removeClass('alert-danger')
+                    .addClass('alert-warning')
+                    .find('#alert-message')
+                    .text(`Vui lòng đợi ${remainingTime} giây trước khi thanh toán tiếp theo`);
+                $('#alert-container').fadeIn();
+                
+                setTimeout(function() {
+                    $('#alert-container').fadeOut();
+                }, 2000);
+                return;
+            }
+            
+            // Kiểm tra địa chỉ giao hàng
+            const address = $('input[name="address"]').val().trim();
+            if (!address) {
+                $('#alert-container')
+                    .removeClass('alert-warning')
+                    .addClass('alert-danger')
+                    .find('#alert-message')
+                    .text('Vui lòng nhập địa chỉ giao hàng để tiếp tục thanh toán');
+                $('#alert-container').fadeIn();
+                
+                // Highlight input địa chỉ
+                $('input[name="address"]')
+                    .addClass('error')
+                    .focus();
+                
+                // Reset sau 2 giây
+                setTimeout(function() {
+                    $('input[name="address"]').removeClass('error');
+                    $('#alert-container').fadeOut();
+                }, 2000);
+                return;
+            }
+            
+            // Cập nhật thời điểm nhấn nút
+            lastPaymentClickTime = currentTime;
+            
+            // Submit form
+            this.submit();
+        });
     });
 </script>
 @endsection
