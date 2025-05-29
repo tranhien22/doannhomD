@@ -22,13 +22,14 @@ class ProductControllerUser extends Controller
 
         $page = $request->query('page', 1);
 
-        if (!is_numeric($page) || $page < 1) {
-             return redirect()->route('user.searchProduct', ['keyword' => $keyword])->with('error', 'Tham số trang không hợp lệ.');
+        // Validate page number
+        if (!is_numeric($page) || $page < 1 || $page > PHP_INT_MAX) {
+            return redirect()->route('user.searchProduct', ['keyword' => $keyword])->with('error', 'Tham số trang không hợp lệ.');
         }
 
         // Tìm kiếm sản phẩm chỉ theo tên
         $products = Product::where('name_product', 'LIKE', '%' . $keyword . '%')
-                          ->paginate(12);
+                          ->paginate(4);
 
         // Check if the requested page is valid within the paginated results
         if ($products->currentPage() > $products->lastPage() && $products->lastPage() > 0) {
