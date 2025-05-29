@@ -121,6 +121,29 @@
             </tbody>
         </table>
     </div>
+    
+    @if(session('reload_needed'))
+    <script>
+        // Tự động reload trang sau 3 giây để cập nhật danh sách
+        setTimeout(function() {
+            window.location.reload();
+        }, 3000);
+    </script>
+    @endif
+
+    @if($errors->has('error'))
+    <script>
+        // Hiển thị thông báo lỗi với SweetAlert hoặc alert
+        alert('⚠️ ' + '{{ $errors->first("error") }}' + '\n\nTrang sẽ tự động cập nhật sau 3 giây...');
+    </script>
+    @endif
+
+    @if($errors->has('warning'))
+    <script>
+        alert('⚠️ Cảnh báo: ' + '{{ $errors->first("warning") }}');
+    </script>
+    @endif
+
     <style>
         .input-search {
             width: 30%;

@@ -150,4 +150,25 @@
         background-color: #c82333;
     }
 </style>
+
+@if(session('reload_needed'))
+<script>
+    // Tự động reload trang sau 3 giây
+    setTimeout(function() {
+        window.location.reload();
+    }, 3000);
+</script>
+@endif
+
+@if($errors->has('error'))
+<script>
+    alert('⚠️ ' + '{{ $errors->first("error") }}' + '\n\nTrang sẽ tự động cập nhật sau 3 giây...');
+</script>
+@endif
+
+@if(session('success'))
+<script>
+    alert('✅ {{ session("success") }}');
+</script>
+@endif
 @endsection
