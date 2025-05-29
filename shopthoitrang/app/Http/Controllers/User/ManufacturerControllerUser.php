@@ -19,7 +19,8 @@ class ManufacturerControllerUser extends Controller
 
         $page = request()->query('page', 1);
 
-        if (!is_numeric($page) || $page < 1) {
+        // Validate page number
+        if (!is_numeric($page) || $page < 1 || $page > PHP_INT_MAX) {
             return redirect()->route('manufacturer.products', ['id' => $id])->with('error', 'Tham số trang không hợp lệ.');
         }
 
