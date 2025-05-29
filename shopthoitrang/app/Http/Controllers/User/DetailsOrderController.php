@@ -31,14 +31,16 @@ class DetailsOrderController extends Controller
         foreach($cart as $value)
         {
             // Tạo chi tiết đơn hàng
+            $product = Product::find($value->id_product);
             $detailOrder = DetailsOrder::create([
                 'id_order' => $id_order,
                 'id_product' => $value->id_product,
                 'quantity_detailsorder' => $value->quantity_product,
+                'product_name' => $product->name_product,
+                'image' => $product->image_address_product,
             ]);
 
             // Cập nhật số lượt mua cho sản phẩm
-            $product = Product::find($value->id_product);
             if ($product) {
                 $product->purchased += $value->quantity_product;
                 $product->save();

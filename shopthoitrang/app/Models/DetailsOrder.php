@@ -16,5 +16,7 @@ class DetailsOrder extends Model
         'id_order',
         'id_product',
         'quantity_detailsorder',
+        'product_name',
+        'image',
     ]; 
 }
