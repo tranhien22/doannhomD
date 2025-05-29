@@ -23,6 +23,7 @@
                         <tr>                   
                             <th>Mã danh mục</th>
                             <th>Tên danh mục</th>
+                            <th>Hình ảnh</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>					
@@ -31,6 +32,12 @@
                         <tr>
                             <td>{{ $cates->id_category }}</td>
                             <td>{{ $cates->name_category }}</td>
+                            <td>
+                                <img src="{{ asset('uploads/categoriesimage/' . $cates->image_category) }}" 
+                                         alt="{{ $cates->image_category }}" 
+                                         class="img-thumbnail" 
+                                         style="width: 150px; height: 150px; object-fit: cover;">
+                            </td>
                             <td>
 								<a href="{{ route('category.updateindex', ['id' => $cates->id_category]) }}" class="mx-1 btn btn-primary">Sửa</a>
                                 <a href="{{ route('category.deleteCategory', ['id' => $cates->id_category]) }}" class="btn btn-danger"

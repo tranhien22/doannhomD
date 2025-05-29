@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use Illuminate\Support\Facades\File;
 
 class CategoryController extends Controller
 {
@@ -21,9 +22,16 @@ class CategoryController extends Controller
     {
         $data = $request->all();
 
-        Category::create([
-            'name_category' => $data['name']
-        ]);
+         if($request->hasFile('image_categori'))
+        {
+            $file = $request->file('image_categori');
+            $ex = $file->getClientOriginalExtension();
+            $filename = time().'.'.$ex;
+            $file->move('uploads/categoriesimage/',$filename);
+            $data['image_categori'] = $filename;
+        }
+
+        Category::createCategory($data);
 
         return redirect('category');
     }
@@ -38,12 +46,24 @@ class CategoryController extends Controller
 
     public function updateCategory(Request $request)
     {
-        $input = $request->all();
-        $input_id = $input['id'];
-        $cate = Category::where('id_category', $input_id)->first();
-        $cate->name_category = $input['name'];
+        $data = $request->all();
+        $category_id = $request->input('id');
+        $category = Category::findCategoryById($category_id);
+        if (!$category) {
+            return redirect()->route('category.index')->with('error', 'Không tìm thấy hãng sản xuất!');
+        }
 
-        $cate->save();
+        if($request->hasFile('image_categori')) {
+            $file = $request->file('image_categori');
+            $ex = $file->getClientOriginalExtension();
+            $filename = time().'.'.$ex;
+            $file->move('uploads/categoriesimage/', $filename);
+            $data['image_categori'] = $filename;
+        } else {
+            $data['image_categori'] = $category->image_category;
+        }
+
+        Category::updateCategoryById($category_id, $data);
         return redirect('category');
     }
 
