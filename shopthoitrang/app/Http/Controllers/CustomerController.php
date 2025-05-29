@@ -17,13 +17,14 @@ class CustomerController extends Controller
     {
         return view('cus_register');
     }
+    
     public function authRegister(Request $request)
     {
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
-            'phone' => 'required|max:10',
+            'phone' => 'required|regex:/^[0-9]{10}$/',
             'address' => 'required',
         ], [
             'name.required' => 'Vui lòng nhập họ tên',
@@ -33,17 +34,17 @@ class CustomerController extends Controller
             'password.required' => 'Vui lòng nhập mật khẩu',
             'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự',
             'phone.required' => 'Vui lòng nhập số điện thoại',
-            'phone.max' => 'Số điện thoại không hợp lệ',
+            'phone.regex' => 'Số điện thoại phải có đúng 10 chữ số',
             'address.required' => 'Vui lòng nhập địa chỉ'
         ]);
 
         $data = $request->all();
         User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
+            'name' => trim($data['name']),
+            'email' => trim($data['email']),
             'password' => Hash::make($data['password']),
-            'phone' => $data['phone'],
-            'address' => $data['address'],
+            'phone' => trim($data['phone']),
+            'address' => trim($data['address']),
             'role' => 0,
         ]);
         return redirect()->route('user.cus_login')->with('success', 'Đăng ký thành công! Vui lòng đăng nhập.');
@@ -66,17 +67,29 @@ class CustomerController extends Controller
             'password.required' => 'Vui lòng nhập mật khẩu'
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', trim($request->email))->first();
 
         if (!$user) {
             return back()->withErrors(['email' => 'Email không tồn tại trong hệ thống']);
         }
 
         if ($user->is_blocked) {
+            // Log lịch sử chặn (chỉ thông báo trong session)
+            session(['block_attempt' => [
+                'user_id' => $user->id_user,
+                'time' => now()->format('d/m/Y H:i:s'),
+                'message' => 'Người dùng ' . $user->name . ' đã cố gắng đăng nhập khi bị khóa'
+            ]]);
+            
             return back()->withErrors(['email' => 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ admin để được hỗ trợ.']);
         }
 
         if (Hash::check($request->password, $user->password)) {
+            // Xử lý remember token (chỉ thông báo)
+            if ($request->has('remember')) {
+                session(['remember_info' => 'Thông tin đăng nhập đã được ghi nhớ']);
+            }
+            
             if ($user->role == 1) {
                 session(['id_user' => $user->id_user]);
                 return redirect()->route('admin.dashboard')->with('success', 'Đăng nhập thành công! Chào mừng Admin.');
@@ -88,15 +101,19 @@ class CustomerController extends Controller
         } else {
             return back()->withErrors(['email' => 'Mật khẩu không chính xác']);
         }
-       
     }
 
     public function signOut(Request $request)
     {
+        // Thông báo confirm dialog trong session
+        session(['logout_confirm' => 'Bạn có chắc chắn muốn đăng xuất?']);
+        
         $request->session()->forget('cart');
+        $request->session()->forget('remember_info');
+        $request->session()->forget('block_attempt');
         Session::flush();
         Auth::logout();
-        return Redirect('login');
+        
+        return redirect('login')->with('success', 'Đăng xuất thành công!');
     }
-
 }
