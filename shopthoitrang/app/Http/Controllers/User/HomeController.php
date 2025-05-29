@@ -14,11 +14,12 @@ class HomeController extends Controller
     {
         $page = $request->query('page', 1);
 
-        if (!is_numeric($page) || $page < 1) {
+        // Validate page number
+        if (!is_numeric($page) || $page < 1 || $page > PHP_INT_MAX) {
             return redirect()->route('home.index')->with('error', 'Tham số trang không hợp lệ.');
         }
 
-        $product = Product::getHomePageProducts(6);
+        $product = Product::getHomePageProducts(8);
 
         // Check if the requested page is valid within the paginated results
         if ($product->currentPage() > $product->lastPage() && $product->lastPage() > 0) {
