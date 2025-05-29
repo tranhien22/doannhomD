@@ -18,9 +18,20 @@ class AdminUserController extends Controller
     // delete user admin
     public function deleteUser(Request $request)
     {
-    $user_id = $request->get('id');
-    $user = User::destroy($user_id);
-    return redirect("listuser")->withSucceess("You have signed-in");
+        try {
+            $user_id = $request->get('id');
+            $user = User::findOrFail($user_id);
+            
+            // Kiểm tra xem có phải admin không
+            if ($user->role == 1) {
+                return redirect()->back()->with('error', 'Không thể xóa tài khoản admin!');
+            }
+            
+            $user->delete();
+            return redirect("listuser")->with('success', 'Đã xóa người dùng thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa người dùng: ' . $e->getMessage());
+        }
     }
 
     // From Update user admin
@@ -33,24 +44,38 @@ class AdminUserController extends Controller
     //Submit form update user admin
     public function postUpdateUser(Request $request)
     {
-       $input =$request->all();
+        $input = $request->all();
 
-       $request->validate([
-        'name' => 'required',
-        'email'=> 'required|email',
-        'password' => 'required|min:6',
-        'phone' => 'required|max:10',
-        'address' => 'required',
-       ]);
+        $request->validate([
+            'name' => 'required',
+            'email'=> 'required|email',
+            'password' => 'required|min:6',
+            'phone' => 'required|max:10',
+            'address' => 'required',
+        ], [
+            'name.required' => 'Vui lòng nhập họ tên',
+            'email.required' => 'Vui lòng nhập email',
+            'email.email' => 'Email không hợp lệ',
+            'password.required' => 'Vui lòng nhập mật khẩu',
+            'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự',
+            'phone.required' => 'Vui lòng nhập số điện thoại',
+            'phone.max' => 'Số điện thoại không hợp lệ',
+            'address.required' => 'Vui lòng nhập địa chỉ'
+        ]);
 
-       $user = User::find($input['id']);
-       $user->name = $input['name'];
-       $user->email = $input['email'];
-       $user->password = Hash::make($input['password']);
-       $user->phone = $input['phone'];
-       $user->address = $input['address'];
-       $user->save();
-       return redirect('listuser')->withSuccess('you have signed-in');
+        try {
+            $user = User::findOrFail($input['id']);
+            $user->name = $input['name'];
+            $user->email = $input['email'];
+            $user->password = Hash::make($input['password']);
+            $user->phone = $input['phone'];
+            $user->address = $input['address'];
+            $user->save();
+            
+            return redirect('listuser')->with('success', 'Cập nhật thông tin người dùng thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi cập nhật: ' . $e->getMessage());
+        }
     }
     //searchhh
     public function searchUser(Request $request)
@@ -64,19 +89,33 @@ class AdminUserController extends Controller
     // Chặn người dùng
     public function blockUser($id)
     {
-        $user = User::findOrFail($id);
-        $user->is_blocked = true;
-        $user->save();
-        return redirect()->back()->with('success', 'Đã chặn người dùng.');
+        try {
+            $user = User::findOrFail($id);
+            
+            // Kiểm tra xem có phải admin không
+            if ($user->role == 1) {
+                return redirect()->back()->with('error', 'Không thể chặn tài khoản admin!');
+            }
+            
+            $user->is_blocked = true;
+            $user->save();
+            return redirect()->back()->with('success', 'Đã chặn người dùng thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi chặn người dùng: ' . $e->getMessage());
+        }
     }
 
     // Mở chặn người dùng
     public function unblockUser($id)
     {
-        $user = User::findOrFail($id);
-        $user->is_blocked = false;
-        $user->save();
-        return redirect()->back()->with('success', 'Đã mở chặn người dùng.');
+        try {
+            $user = User::findOrFail($id);
+            $user->is_blocked = false;
+            $user->save();
+            return redirect()->back()->with('success', 'Đã mở chặn người dùng thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi mở chặn người dùng: ' . $e->getMessage());
+        }
     }
     
     public function dashboard()

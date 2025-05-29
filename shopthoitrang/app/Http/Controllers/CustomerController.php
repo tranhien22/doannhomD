@@ -25,8 +25,18 @@ class CustomerController extends Controller
             'password' => 'required|min:6',
             'phone' => 'required|max:10',
             'address' => 'required',
-
+        ], [
+            'name.required' => 'Vui lòng nhập họ tên',
+            'email.required' => 'Vui lòng nhập email',
+            'email.email' => 'Email không hợp lệ',
+            'email.unique' => 'Email này đã được sử dụng',
+            'password.required' => 'Vui lòng nhập mật khẩu',
+            'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự',
+            'phone.required' => 'Vui lòng nhập số điện thoại',
+            'phone.max' => 'Số điện thoại không hợp lệ',
+            'address.required' => 'Vui lòng nhập địa chỉ'
         ]);
+
         $data = $request->all();
         User::create([
             'name' => $data['name'],
@@ -36,9 +46,7 @@ class CustomerController extends Controller
             'address' => $data['address'],
             'role' => 0,
         ]);
-        return redirect()->route('user.cus_login');
-
-
+        return redirect()->route('user.cus_login')->with('success', 'Đăng ký thành công! Vui lòng đăng nhập.');
     }
 
     // login client
@@ -46,47 +54,39 @@ class CustomerController extends Controller
     {
         return view('cus_login');
     }
-    public function authLogin(Request $request): \Illuminate\Http\RedirectResponse
+
+    public function authLogin(Request $request)
     {
         $request->validate([
-            'email' => 'required',
+            'email' => 'required|email',
             'password' => 'required',
+        ], [
+            'email.required' => 'Vui lòng nhập email',
+            'email.email' => 'Email không hợp lệ',
+            'password.required' => 'Vui lòng nhập mật khẩu'
         ]);
+
         $user = User::where('email', $request->email)->first();
-          
-        if ($user && Hash::check($request->password, $user->password)) {
-            if ($user ->role == 0) {
-				session::put('id_user',$user->id_user);
-                session('cart');
-                $request->session()->put('cart.user_id', $user->id_user);    
-                return redirect()->intended('Home')->withSuccess('Signed in');
-            }
-            else{
-                return redirect()->route('category.index');
-            }
-        }
-        else{
-            return back()->withErrors(['email' => 'Invalid credentials']);
+
+        if (!$user) {
+            return back()->withErrors(['email' => 'Email không tồn tại trong hệ thống']);
         }
 
-        // Kiểm tra tài khoản bị chặn
         if ($user->is_blocked) {
-            return back()->withErrors(['email' => 'Tài khoản của bạn đã bị chặn!']);
+            return back()->withErrors(['email' => 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ admin để được hỗ trợ.']);
         }
 
         if (Hash::check($request->password, $user->password)) {
             if ($user->role == 1) {
-                // Nếu là admin
                 session(['id_user' => $user->id_user]);
-                return redirect()->route('admin.dashboard');
+                return redirect()->route('admin.dashboard')->with('success', 'Đăng nhập thành công! Chào mừng Admin.');
             } else {
-                // Nếu là user thường
                 session(['id_user' => $user->id_user]);
                 session(['cart' => ['user_id' => $user->id_user]]);
-                return redirect()->route('home.index');
+                return redirect()->route('home.index')->with('success', 'Đăng nhập thành công! Chào mừng ' . $user->name);
             }
         } else {
-            return back()->withErrors(['email' => 'Invalid credentials']);
+            return back()->withErrors(['email' => 'Mật khẩu không chính xác']);
         }
        
     }

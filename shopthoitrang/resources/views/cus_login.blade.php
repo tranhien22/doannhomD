@@ -50,7 +50,7 @@
 
             {{-- Links --}}
             <div class="form-nav-row">
-                <a href="{{ url('forget-password') }}" class="form-link">Quên mật khẩu?</a>
+                <a href="#" class="form-link" onclick="alert('Chức năng quên mật khẩu đang được phát triển.'); return false;">Quên mật khẩu?</a>
             </div>
             <div class="login-row form-nav-row">
                 <p>Bạn chưa có tài khoản?</p>
