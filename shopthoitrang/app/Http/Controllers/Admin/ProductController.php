@@ -34,7 +34,7 @@ class ProductController extends Controller
                     ->with('error', 'Tham số trang không hợp lệ');
             }
 
-            $products = Product::getProductsWithPagination(2);
+            $products = Product::getProductsWithPagination(6);
             $category = Category::all();
             $manufacturer = Manufacturer::getAllManufacturers();
             return view('admin.product.listproduct', [
