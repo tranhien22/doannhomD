@@ -41,19 +41,79 @@
                             <a href="{{route('user.updateUser', ['id' => $user->id_user]) }}" class="btn btn-primary">Update</a>
                         </td>
                         <td>
-                            <a href="{{route('user.deleteUser', ['id' => $user->id_user]) }}" class="btn btn-danger">Delete</a>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{$user->id_user}}">
+                                Delete
+                            </button>
+                            <!-- Modal xác nhận xóa -->
+                            <div class="modal fade" id="deleteModal{{$user->id_user}}" tabindex="-1" aria-labelledby="deleteModalLabel{{$user->id_user}}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModalLabel{{$user->id_user}}">Xác nhận xóa</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Bạn có chắc chắn muốn xóa người dùng <strong>{{$user->name}}</strong> không?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                            <a href="{{route('user.deleteUser', ['id' => $user->id_user]) }}" class="btn btn-danger">Xóa</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                         <td>
                             @if($user->is_blocked)
-                                <form action="{{ route('user.unblock', $user->id_user) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    <button type="submit" class="btn btn-success btn-sm">Mở chặn</button>
-                                </form>
+                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#unblockModal{{$user->id_user}}">
+                                    Mở chặn
+                                </button>
+                                <!-- Modal xác nhận mở chặn -->
+                                <div class="modal fade" id="unblockModal{{$user->id_user}}" tabindex="-1" aria-labelledby="unblockModalLabel{{$user->id_user}}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="unblockModalLabel{{$user->id_user}}">Xác nhận mở chặn</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Bạn có chắc chắn muốn mở chặn người dùng <strong>{{$user->name}}</strong> không?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                <form action="{{ route('user.unblock', $user->id_user) }}" method="POST" style="display:inline;">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-success">Mở chặn</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             @else
-                                <form action="{{ route('user.block', $user->id_user) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    <button type="submit" class="btn btn-warning btn-sm">Chặn</button>
-                                </form>
+                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#blockModal{{$user->id_user}}">
+                                    Chặn
+                                </button>
+                                <!-- Modal xác nhận chặn -->
+                                <div class="modal fade" id="blockModal{{$user->id_user}}" tabindex="-1" aria-labelledby="blockModalLabel{{$user->id_user}}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="blockModalLabel{{$user->id_user}}">Xác nhận chặn</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Bạn có chắc chắn muốn chặn người dùng <strong>{{$user->name}}</strong> không?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                <form action="{{ route('user.block', $user->id_user) }}" method="POST" style="display:inline;">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-warning">Chặn</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             @endif
                         </td>
                     </tr>
@@ -85,6 +145,31 @@
 
         table {
             margin-top: 50px;
+        }
+
+        /* Style cho modal */
+        .modal-content {
+            border-radius: 8px;
+        }
+
+        .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .modal-footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .modal-body {
+            padding: 20px;
+            font-size: 16px;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            color: #333;
         }
     </style>
 @endsection

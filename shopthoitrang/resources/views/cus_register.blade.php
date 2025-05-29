@@ -45,11 +45,6 @@
                 @error('address') <div class="text-danger">{{ $message }}</div> @enderror
             </div>
 
-            <div class="form-nav-row">
-                <input type="checkbox" id="remember"> <label for="remember">Nhớ đăng nhập</label> |
-                <a href="#" class="form-link">Quên mật khẩu?</a>
-            </div>
-
             <div class="mt-3">
                 <input type="submit" value="Đăng ký" class="btnLogin">
             </div>
@@ -60,4 +55,5 @@
         </form>
     </div>
 </div>
+
 @endsection
